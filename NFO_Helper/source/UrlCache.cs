@@ -12,10 +12,12 @@ namespace NFO_Helper
     {
         public HttpContent Content { get; set; }
         public System.Diagnostics.Stopwatch watch { get; set; }
+        public bool isStale { get; set; }
         public CacheObject( HttpContent content)
         {
             Content = content;
             watch = System.Diagnostics.Stopwatch.StartNew();
+            isStale = false;
         }
     }
 
@@ -23,20 +25,19 @@ namespace NFO_Helper
     {
         private Dictionary<string, CacheObject> cache { get; set; }
         private uint CacheLifetimeSec { get; set; }
+        private uint CacheStaleTimerSec { get; set; }
 
         public UrlCache( uint lifetimeInSeconds = 300 ) // default is 5 min.
         {
             CacheLifetimeSec = lifetimeInSeconds;
             cache = new Dictionary<string, CacheObject>();
+            CacheStaleTimerSec = 15; // somewhat arbitrary number.
 
-            // TBD: periodically check to see if any of the cached items are 'dead' and should be removed.
-
-
-            // TBD: rename
-            System.Timers.Timer aTimer = new System.Timers.Timer();
-            aTimer.Elapsed += new ElapsedEventHandler(onTimerExpire);
-            aTimer.Interval = lifetimeInSeconds*1000;
-            aTimer.Enabled = true;
+            // use a timer to periodically check for stale items in the cache.
+            System.Timers.Timer staleTimer = new System.Timers.Timer();
+            staleTimer.Elapsed += new ElapsedEventHandler(onTimerExpire);
+            staleTimer.Interval = CacheStaleTimerSec * 1000;
+            staleTimer.Enabled = true;
         }
         private void onTimerExpire(object source, ElapsedEventArgs e)
         {
@@ -45,11 +46,14 @@ namespace NFO_Helper
                 // iterate through dictionary, remove anything that has been there more than the max time allowed.
                 foreach(KeyValuePair<string,CacheObject> entry in cache )
                 {
+                    if (entry.Value.isStale == true)
+                        continue;
+
                     entry.Value.watch.Stop();
                     if( entry.Value.watch.ElapsedMilliseconds > CacheLifetimeSec * 1000 )
                     {
-                        // TBD: remove stale entry! will this corrupt the map iteration?
-                        // maybe just mark the value with a 'stale' member variable, and let the user of the cache decide what to do?
+                        entry.Value.isStale = true;
+                        // no need to re-start the stopwatch...its stale.
                     }
                     else
                     {
@@ -74,7 +78,10 @@ namespace NFO_Helper
                 CacheObject temp;
                 if (cache.TryGetValue(url, out temp) == true)
                 {
-                    content = temp.Content;
+                    if (temp.isStale == false)
+                    {
+                        content = temp.Content;
+                    }
                 }
             }
             return content;
