@@ -67,7 +67,17 @@ namespace NFO_Helper
         {
             lock (cache)
             {
-                cache.Add(url, new CacheObject(content));
+                // try to find it in cache first, it may just need to update.
+                CacheObject temp;
+                if (cache.TryGetValue(url, out temp) == true)
+                {
+                    cache[url].isStale = false;
+                    cache[url].watch.Restart();
+                }
+                else
+                {
+                    cache.Add(url, new CacheObject(content));
+                }
             }
         }
         public HttpContent isCached(string url )
