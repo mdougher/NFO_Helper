@@ -37,7 +37,15 @@ namespace NFO_Helper
             }
             panel_results.Controls.Clear();
 
-            SearchResults results = await provider.getSearchResultsAsync(textBox_search.Text);
+            SearchResults results = null;
+            try
+            {
+                results = await provider.getSearchResultsAsync(textBox_search.Text);
+            }
+            catch (DataProviderException ex )
+            {
+                MessageBox.Show(ex.Message, "NFO_Helper Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             if (results == null)
                 return;
 
@@ -125,14 +133,19 @@ namespace NFO_Helper
 
         private async Task<bool> loadImageAsync(string url, PictureBox picbox)
         {
-            Stream s = await HttpHelpers.getHttpUrlResultAsStreamAsync(url);
-            if (s != null)
+            try
             {
+                Stream s = await HttpHelpers.getHttpUrlResultAsStreamAsync(url);
                 picbox.Image = Image.FromStream(s);
+            }
+            catch (DataProviderException ex)
+            {
+                MessageBox.Show(ex.Message, "NFO_Helper Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
             return true;
         }
-        
+
         private void onUserSelection(object sender, EventArgs e, string id)
         {
             ID = id;

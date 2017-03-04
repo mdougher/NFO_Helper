@@ -165,8 +165,15 @@ namespace NFO_Helper
             try
             {
                 NFO_Filter filter = new DefaultNfoFilter();
-                nfo = await provider.getNFOAsync(id, filter);
-                await updateDialogWithNfoAsync();
+                try
+                {
+                    nfo = await provider.getNFOAsync(id, filter);
+                    await updateDialogWithNfoAsync();
+                }
+                catch (DataProviderException ex )
+                {
+                    MessageBox.Show(ex.Message, "NFO_Helper Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch (ArgumentNullException e)
             {
@@ -202,10 +209,15 @@ namespace NFO_Helper
         }
         private async Task<bool> loadImageAsync(string url, PictureBox picbox)
         {
-            Stream s = await HttpHelpers.getHttpUrlResultAsStreamAsync(url);
-            if (s != null)
+            try
             {
+                Stream s = await HttpHelpers.getHttpUrlResultAsStreamAsync(url);
                 picbox.Image = Image.FromStream(s);
+            }
+            catch (DataProviderException ex)
+            {
+                MessageBox.Show(ex.Message, "NFO_Helper Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
             return true;
         }
