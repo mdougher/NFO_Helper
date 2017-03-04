@@ -73,6 +73,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="source\DataProviderException.cs" />
     <Compile Include="source\HttpHelpers.cs" />
     <Compile Include="source\INfoDataSource.cs" />
     <Compile Include="source\IDataProvider.cs" />
@@ -139,6 +140,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NFO Format.txt" />
     <Content Include="ToDo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

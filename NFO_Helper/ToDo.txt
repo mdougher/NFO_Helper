@@ -4,16 +4,10 @@ For Future Release(s)
 * display NFO data in a more editable way.
 * customizable NFO filters some kind of new form. let the user define them, save to file & read it when needed.
 * add a 'release notes' section to the About form.
+* add more providers for movie data (IMDb, what else?)
 
 For Soon:
 * show an 'error' image if there are no posters available, or if we fail to get one.
-* implement a stale timeout for url cache.
-* put everything into GIT or sourceforge (?)
 
 code improvements:
-* wrap things in using statements for disposal. see: httphelpers.
 * what other things should be disposed?
-* implement iDisposable in my objects?
-* catch JSON exceptions when deserializing. 
-* when a TMDb API call fails in the 'get nfo data' loop, break from loop. otherwise we will likely repeatedly call the APIs and fail over and over.
-	say, if bad api-key is present.

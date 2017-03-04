@@ -30,15 +30,10 @@ namespace NFO_Helper
 
             HttpResponseMessage response = await getHttpResponseAsync(url);
             if (response == null)
-            {
-                MessageBox.Show("HTTP Response Error. Invalid Response (null) from request: " + url, "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
+                throw new DataProviderException("HTTP Response Error. Invalid Response (null) from request: " + url);
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                MessageBox.Show("HTTP Error Code " + response.StatusCode + "(" + response.ReasonPhrase + ") in request: " + url, "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
+                throw new DataProviderException("HTTP Error Response: " + response.ReasonPhrase + " in request: " + url);
+
             // add this to the cache.
             contentCache.toCache(url, response.Content);
             return response.Content;
@@ -48,16 +43,12 @@ namespace NFO_Helper
         {
             HttpContent c = await getHttpResponseContentAsync(url);
             if (c == null)
-            {
-                // do not give a message box, assume one has already been shown.
-                return null;
-            }
+                throw new DataProviderException("Failed to get HTTP Content for URL: " + url);
+
             string result = await c.ReadAsStringAsync();
             if (result == null)
-            {
-                MessageBox.Show("Failed to get stream contents for request: " + url, "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
+                throw new DataProviderException("Failed to get String contents for URL: " + url);
+
             return result;
         }
 
@@ -65,16 +56,12 @@ namespace NFO_Helper
         {
             HttpContent c = await getHttpResponseContentAsync(url);
             if (c == null)
-            {
-                // do not give a message box, assume one has already been shown.
-                return null;
-            }
+                throw new DataProviderException("Failed to get HTTP Content for URL: " + url);
+
             Stream result = await c.ReadAsStreamAsync();
             if (result == null)
-            {
-                MessageBox.Show("Failed to get stream contents for request: " + url, "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
+                throw new DataProviderException("Failed to get Stream contents for URL: " + url);
+
             return result;
         }
     }

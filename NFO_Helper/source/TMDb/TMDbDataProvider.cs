@@ -37,7 +37,7 @@ namespace NFO_Helper.TMDb
                 foreach (INfoDataSource source in mySources)
                 {
                     object obj = await source.getProperty(nfoProp);
-                    if ( obj != null )
+                    if (obj != null)
                     {
                         nfo.setProperty(nfoProp, obj);
                         break; // got it from this source, stop looking for this prop.
