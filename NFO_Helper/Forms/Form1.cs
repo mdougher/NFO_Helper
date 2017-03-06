@@ -15,7 +15,8 @@ namespace NFO_Helper
     {
         private NFO nfo { get; set; }
         private IDataProvider provider { get; set; }
-        int currentPosterIndex;
+        private int currentPosterIndex { get; set; }
+        private NFO_Filter filter { get; set; }
 
         public Form1()
         {
@@ -24,6 +25,9 @@ namespace NFO_Helper
             nfo = new NFO();
             currentPosterIndex = 0;
             InitializeProvidersAtStartup();
+            // TBD: check configuration if another filter has been used, load that instead.
+            // TBD: somehow indicate on the form which filter is in use.
+            filter = new DefaultNfoFilter();
         }
 
         private void InitializeProvidersAtStartup()
@@ -94,6 +98,11 @@ namespace NFO_Helper
             if (nfo == null || String.IsNullOrEmpty(nfo.title) == true)
                 return;
 
+            // TBD: change default path to the same path as the exe.
+            // TBD: if the NFO contains a 'thumb', we do not need to save the image?
+            // TBD: if the NFO contains a 'thumb', do not allow user to change the image. 
+            //      the controls should be replaced with something to indicate this.
+
             // save the NFO
             string defaultFileName = nfo.title + " (" + nfo.year + ")";
             SaveFileDialog dlgNfo = new SaveFileDialog();
@@ -104,7 +113,7 @@ namespace NFO_Helper
             dlgNfo.DefaultExt = "nfo";
             dlgNfo.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             dlgNfo.OverwritePrompt = true;
-            dlgNfo.Title = "Save NFO File...";
+            dlgNfo.Title = "Export Step 1 of 2 - Save NFO File...";
             dlgNfo.FileName = defaultFileName;
 
             if (dlgNfo.ShowDialog() == DialogResult.OK)
@@ -125,7 +134,7 @@ namespace NFO_Helper
             dlgImg.DefaultExt = "jpg";
             dlgImg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             dlgImg.OverwritePrompt = true;
-            dlgImg.Title = "Save Image File...";
+            dlgImg.Title = "Export Step 2 of 2 - Save Image File...";
             dlgImg.FileName = defaultFileName;
 
             if (dlgImg.ShowDialog() == DialogResult.OK)
@@ -164,7 +173,6 @@ namespace NFO_Helper
 
             try
             {
-                NFO_Filter filter = new DefaultNfoFilter();
                 try
                 {
                     nfo = await provider.getNFOAsync(id, filter);
@@ -263,6 +271,19 @@ namespace NFO_Helper
                 {
                     // a new key has been defined, so it was either entered for the first time, or it has been changed.
                     provider = new TMDb.TMDbDataProvider();
+                }
+            }
+        }
+
+        private void nFOFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FilterForm form = new FilterForm(filter))
+            {
+                DialogResult result = form.ShowDialog();
+                if(result == DialogResult.OK)
+                {
+                    // get the new filter from the dialog.
+                    filter = form.filter;
                 }
             }
         }

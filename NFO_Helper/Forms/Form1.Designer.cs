@@ -39,13 +39,14 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button_close = new System.Windows.Forms.Button();
             this.MainMenu = new System.Windows.Forms.MenuStrip();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.appSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button_img_scroll_left = new System.Windows.Forms.Button();
             this.button_img_scroll_right = new System.Windows.Forms.Button();
             this.label_image_num = new System.Windows.Forms.Label();
+            this.nFOFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_img)).BeginInit();
             this.MainMenu.SuspendLayout();
             this.SuspendLayout();
@@ -157,6 +158,22 @@
             this.MainMenu.TabIndex = 10;
             this.MainMenu.Text = "menuStrip1";
             // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.appSettingsToolStripMenuItem,
+            this.nFOFilterToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // appSettingsToolStripMenuItem
+            // 
+            this.appSettingsToolStripMenuItem.Name = "appSettingsToolStripMenuItem";
+            this.appSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.appSettingsToolStripMenuItem.Text = "App Settings";
+            this.appSettingsToolStripMenuItem.Click += new System.EventHandler(this.appSettingsToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -171,21 +188,6 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.appSettingsToolStripMenuItem});
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.settingsToolStripMenuItem.Text = "Settings";
-            // 
-            // appSettingsToolStripMenuItem
-            // 
-            this.appSettingsToolStripMenuItem.Name = "appSettingsToolStripMenuItem";
-            this.appSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.appSettingsToolStripMenuItem.Text = "App Settings";
-            this.appSettingsToolStripMenuItem.Click += new System.EventHandler(this.appSettingsToolStripMenuItem_Click);
             // 
             // button_img_scroll_left
             // 
@@ -216,6 +218,13 @@
             this.label_image_num.TabIndex = 13;
             this.label_image_num.Text = "Image 0 of 0";
             this.label_image_num.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // nFOFilterToolStripMenuItem
+            // 
+            this.nFOFilterToolStripMenuItem.Name = "nFOFilterToolStripMenuItem";
+            this.nFOFilterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.nFOFilterToolStripMenuItem.Text = "NFO Filter";
+            this.nFOFilterToolStripMenuItem.Click += new System.EventHandler(this.nFOFilterToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -269,6 +278,7 @@
         private System.Windows.Forms.Label label_image_num;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem appSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nFOFilterToolStripMenuItem;
     }
 }
 

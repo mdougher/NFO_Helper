@@ -17,10 +17,10 @@ namespace NFO_Helper.TMDb
         }
         public async Task<object> getProperty(string propName)
         {
-            if (propName == "title") { return (await refreshData() == false ? null : myMovie.title); }
-            else if (propName == "id") { return (await refreshData() == false ? null : myMovie.imdb_id); } // NFO property ID is asking for the IMDB ID, not the TMDB ID, which is just called "ID".
-            else if (propName == "outline") { return (await refreshData() == false ? null : myMovie.overview); } // NFO property OUTLINE is the TMDB OVERVIEW.
-            else if (propName == "genres")
+            if (propName == NFOConstants.Title) { return (await refreshData() == false ? null : myMovie.title); }
+            else if (propName == NFOConstants.Id) { return (await refreshData() == false ? null : myMovie.imdb_id); } // NFO property ID is asking for the IMDB ID, not the TMDB ID, which is just called "ID".
+            else if (propName == NFOConstants.Outline) { return (await refreshData() == false ? null : myMovie.overview); } // NFO property OUTLINE is the TMDB OVERVIEW.
+            else if (propName == NFOConstants.Genres)
             {
                 if (await refreshData() == false)
                     return null;
@@ -30,13 +30,13 @@ namespace NFO_Helper.TMDb
                 { list.Add(g.name); }
                 return list;
             }
-            else if (propName == "year") { return (await refreshData() == false ? null : myMovie.release_date.Substring(0, 4)); } // take the year from the release_date.
-            else if (propName == "runtime") { return (await refreshData() == false ? null : myMovie.runtime + " min"); } // append minute label to runtime.
-            else if (propName == "rating") { return (await refreshData() == false ? 0 : myMovie.vote_average); } // rating is TMDB VOTE_AVERAGE.
-            else if (propName == "original_title") { return (await refreshData() == false ? null : myMovie.original_title); }
-            else if (propName == "set") { return (await refreshData() == false ? null : myMovie.belongs_to_collection.name); } // return set name only.
-            else if (propName == "votes") { return (await refreshData() == false ? 0 : myMovie.vote_count); } // votes is TMDB VOTE_COUNT.
-            else if (propName == "tagline") { return (await refreshData() == false ? null : myMovie.tagline); }
+            else if (propName == NFOConstants.Year) { return (await refreshData() == false ? null : myMovie.release_date.Substring(0, 4)); } // take the year from the release_date.
+            else if (propName == NFOConstants.Runtime) { return (await refreshData() == false ? null : myMovie.runtime + " min"); } // append minute label to runtime.
+            else if (propName == NFOConstants.Rating) { return (await refreshData() == false ? 0 : myMovie.vote_average); } // rating is TMDB VOTE_AVERAGE.
+            else if (propName == NFOConstants.OriginalTitle) { return (await refreshData() == false ? null : myMovie.original_title); }
+            else if (propName == NFOConstants.Set) { return (await refreshData() == false ? null : myMovie.belongs_to_collection.name); } // return set name only.
+            else if (propName == NFOConstants.Votes) { return (await refreshData() == false ? 0 : myMovie.vote_count); } // votes is TMDB VOTE_COUNT.
+            else if (propName == NFOConstants.Tagline) { return (await refreshData() == false ? null : myMovie.tagline); }
             // did not find a property we want, return null!
             return null;
         }
@@ -63,7 +63,7 @@ namespace NFO_Helper.TMDb
         }
         public async Task<object> getProperty(string propName)
         {
-            if (propName == "director")
+            if (propName == NFOConstants.Director)
             {
                 if (await refreshData() == false)
                     return null;
@@ -78,7 +78,7 @@ namespace NFO_Helper.TMDb
                 // could not find the director
                 return null;
             }
-            else if (propName == "actors")
+            else if (propName == NFOConstants.Actors)
             {
                 if (await refreshData() == false)
                     return null;
@@ -163,7 +163,7 @@ namespace NFO_Helper.TMDb
         } 
         public async Task<object> getProperty(string propName)
         {
-            if (propName == "posters")
+            if (propName == NFOConstants.Posters)
             {
                 if (await refreshData() == false)
                     return null;
@@ -179,7 +179,7 @@ namespace NFO_Helper.TMDb
                 }
                 return posters;
             }
-            else if (propName == "thumb")
+            else if (propName == NFOConstants.Thumb)
             {
                 if (await refreshData() == false)
                     return null;
@@ -211,7 +211,7 @@ namespace NFO_Helper.TMDb
         }
         public async Task<object> getProperty(string propName)
         {
-            if( propName == "trailer" )
+            if( propName == NFOConstants.Trailer)
             {
                 if (await refreshData() == false)
                     return null;

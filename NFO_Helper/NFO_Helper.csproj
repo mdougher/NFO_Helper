@@ -50,6 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FilterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FilterForm.Designer.cs">
+      <DependentUpon>FilterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +83,7 @@
     <Compile Include="source\HttpHelpers.cs" />
     <Compile Include="source\INfoDataSource.cs" />
     <Compile Include="source\IDataProvider.cs" />
+    <Compile Include="source\NFOConstants.cs" />
     <Compile Include="source\NFO_Filter.cs" />
     <Compile Include="source\SearchResults.cs" />
     <Compile Include="source\TMDb\TMDbApi.cs" />
@@ -98,6 +105,9 @@
     <Compile Include="source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="source\UrlCache.cs" />
+    <EmbeddedResource Include="Forms\FilterForm.resx">
+      <DependentUpon>FilterForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
       <SubType>Designer</SubType>

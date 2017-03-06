@@ -27,6 +27,14 @@ namespace NFO_Helper
         // NFO_Helper extensions to the NFO format.
         public IList<string> posterUrls { get; set; }
 
+        public NFO()
+        {
+            genres = new List<string>();
+            actors = new List<string>();
+            posterUrls = new List<string>();
+            reset();
+        }
+
         public void reset()
         {
             title = "";
@@ -48,22 +56,22 @@ namespace NFO_Helper
 
         public void setProperty(string propName, object typeValue)
         {
-            if (propName == "title") { title = typeValue.ToString(); }
-            else if (propName == "genres") { genres = (List<string>)typeValue; }
-            else if (propName == "rating") { rating = typeValue.ToString(); }
-            else if (propName == "outline") { outline = typeValue.ToString(); }
-            else if (propName == "runtime") { runtime = typeValue.ToString(); }
-            else if (propName == "year") { year = typeValue.ToString(); }
-            else if (propName == "id") { id = typeValue.ToString(); }
-            else if (propName == "trailer") { trailer = typeValue.ToString(); }
-            else if (propName == "director") { director = typeValue.ToString(); }
-            else if (propName == "actors") { actors = (List<string>)typeValue; }
-            else if (propName == "posters") { posterUrls = (List<string>)typeValue; }
-            else if (propName == "original_title") { original_title = typeValue.ToString(); }
-            else if (propName == "set") { set = typeValue.ToString(); }
-            else if (propName == "votes") { votes = typeValue.ToString(); }
-            else if (propName == "tagline") { tagline = typeValue.ToString(); }
-            else if (propName == "thumb") { thumb = typeValue.ToString(); }
+            if (propName == NFOConstants.Title) { title = typeValue.ToString(); }
+            else if (propName == NFOConstants.Genres) { genres = (List<string>)typeValue; }
+            else if (propName == NFOConstants.Rating) { rating = typeValue.ToString(); }
+            else if (propName == NFOConstants.Outline) { outline = typeValue.ToString(); }
+            else if (propName == NFOConstants.Runtime) { runtime = typeValue.ToString(); }
+            else if (propName == NFOConstants.Year) { year = typeValue.ToString(); }
+            else if (propName == NFOConstants.Id) { id = typeValue.ToString(); }
+            else if (propName == NFOConstants.Trailer) { trailer = typeValue.ToString(); }
+            else if (propName == NFOConstants.Director) { director = typeValue.ToString(); }
+            else if (propName == NFOConstants.Actors) { actors = (List<string>)typeValue; }
+            else if (propName == NFOConstants.Posters) { posterUrls = (List<string>)typeValue; }
+            else if (propName == NFOConstants.OriginalTitle) { original_title = typeValue.ToString(); }
+            else if (propName == NFOConstants.Set) { set = typeValue.ToString(); }
+            else if (propName == NFOConstants.Votes) { votes = typeValue.ToString(); }
+            else if (propName == NFOConstants.Tagline) { tagline = typeValue.ToString(); }
+            else if (propName == NFOConstants.Thumb) { thumb = typeValue.ToString(); }
         }
         
         public string toXML(bool pretty)

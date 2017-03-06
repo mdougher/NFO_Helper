@@ -13,6 +13,7 @@ namespace NFO_Helper
         public NFO_Filter()
         {
             NFO_PropertyList = new List<string>();
+            NFO_PropertyList.Add(NFOConstants.Posters); // posters is required for all filters.
         }
     }
 
@@ -20,18 +21,17 @@ namespace NFO_Helper
     {
         public DefaultNfoFilter()
         {
-            NFO_PropertyList.Add("title");
-            NFO_PropertyList.Add("rating");
-            NFO_PropertyList.Add("year");
-            NFO_PropertyList.Add("outline");
-            NFO_PropertyList.Add("runtime");
-            NFO_PropertyList.Add("id");
-            NFO_PropertyList.Add("trailer");
-            NFO_PropertyList.Add("genres");
-            NFO_PropertyList.Add("director");
-            NFO_PropertyList.Add("actors");
-            NFO_PropertyList.Add("posters");
-            NFO_PropertyList.Add("tagline");
+            NFO_PropertyList.Add(NFOConstants.Title);
+            NFO_PropertyList.Add(NFOConstants.Rating);
+            NFO_PropertyList.Add(NFOConstants.Year);
+            NFO_PropertyList.Add(NFOConstants.Outline);
+            NFO_PropertyList.Add(NFOConstants.Runtime);
+            NFO_PropertyList.Add(NFOConstants.Id);
+            NFO_PropertyList.Add(NFOConstants.Trailer);
+            NFO_PropertyList.Add(NFOConstants.Genres);
+            NFO_PropertyList.Add(NFOConstants.Director);
+            NFO_PropertyList.Add(NFOConstants.Actors);
+            NFO_PropertyList.Add(NFOConstants.Tagline);
         }
     }
 }
