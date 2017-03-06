@@ -31,6 +31,7 @@ namespace NFO_Helper
             NFO_PropertyList.Add("director");
             NFO_PropertyList.Add("actors");
             NFO_PropertyList.Add("posters");
+            NFO_PropertyList.Add("tagline");
         }
     }
 }

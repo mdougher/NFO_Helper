@@ -18,6 +18,13 @@ namespace NFO_Helper
         public IList<string> genres { get; set; }
         public string director { get; set; }
         public IList<string> actors { get; set; }
+        public string original_title { get; set; }
+        public string set { get; set; }
+        public string votes { get; set; }
+        public string tagline { get; set; }
+        public string thumb { get; set; }
+
+        // NFO_Helper extensions to the NFO format.
         public IList<string> posterUrls { get; set; }
 
         public void reset()
@@ -32,21 +39,31 @@ namespace NFO_Helper
             director = "";
             actors.Clear();
             posterUrls.Clear();
+            original_title = "";
+            set = "";
+            votes = "";
+            tagline = "";
+            thumb = "";
         }
 
         public void setProperty(string propName, object typeValue)
         {
-            if( propName == "title" ) { title = typeValue.ToString(); }
-            else if( propName == "genres" ) { genres = (List<string>)typeValue; }
-            else if ( propName == "rating" ) { rating = typeValue.ToString(); }
-            else if ( propName == "outline" ) { outline = typeValue.ToString(); }
-            else if (propName == "runtime" ) { runtime = typeValue.ToString(); }
-            else if (propName == "year" ) { year = typeValue.ToString(); }
-            else if (propName == "id" ) { id = typeValue.ToString(); }
-            else if (propName == "trailer" ) { trailer = typeValue.ToString(); }
-            else if (propName == "director" ) { director = typeValue.ToString(); }
-            else if (propName == "actors" ) { actors = (List<string>)typeValue; }
-            else if (propName == "posters" ) { posterUrls = (List<string>)typeValue; }
+            if (propName == "title") { title = typeValue.ToString(); }
+            else if (propName == "genres") { genres = (List<string>)typeValue; }
+            else if (propName == "rating") { rating = typeValue.ToString(); }
+            else if (propName == "outline") { outline = typeValue.ToString(); }
+            else if (propName == "runtime") { runtime = typeValue.ToString(); }
+            else if (propName == "year") { year = typeValue.ToString(); }
+            else if (propName == "id") { id = typeValue.ToString(); }
+            else if (propName == "trailer") { trailer = typeValue.ToString(); }
+            else if (propName == "director") { director = typeValue.ToString(); }
+            else if (propName == "actors") { actors = (List<string>)typeValue; }
+            else if (propName == "posters") { posterUrls = (List<string>)typeValue; }
+            else if (propName == "original_title") { original_title = typeValue.ToString(); }
+            else if (propName == "set") { set = typeValue.ToString(); }
+            else if (propName == "votes") { votes = typeValue.ToString(); }
+            else if (propName == "tagline") { tagline = typeValue.ToString(); }
+            else if (propName == "thumb") { thumb = typeValue.ToString(); }
         }
         
         public string toXML(bool pretty)
@@ -58,10 +75,18 @@ namespace NFO_Helper
             output += "<movie>" + newline;
             // title
             if (String.IsNullOrEmpty(title) == false) { output += tab + "<title>" + title + "</title>" + newline; }
+            // original title
+            if (String.IsNullOrEmpty(original_title) == false) { output += tab + "<original_title>" + original_title + "</original_title>" + newline; }
+            // set
+            if (String.IsNullOrEmpty(set) == false) { output += tab + "<set>" + set + "</set>" + newline; }
             // rating
             if (String.IsNullOrEmpty(rating) == false) { output += tab + "<rating>" + rating + "</rating>" + newline; }
+            // votes
+            if (String.IsNullOrEmpty(votes) == false) { output += tab + "<votes>" + votes + "</votes>" + newline; }
             // year
             if (String.IsNullOrEmpty(year) == false) { output += tab + "<year>" + year + "</year>" + newline; }
+            // tagline
+            if (String.IsNullOrEmpty(tagline) == false) { output += tab + "<tagline>" + tagline + "</tagline>" + newline; }
             // outline
             if (String.IsNullOrEmpty(outline) == false) { output += tab + "<outline>" + outline + "</outline>" + newline; }
             // runtime
@@ -70,6 +95,8 @@ namespace NFO_Helper
             if (String.IsNullOrEmpty(id) == false) { output += tab + "<id>" + id + "</id>" + newline; }
             // trailer
             if (String.IsNullOrEmpty(trailer) == false) { output += tab + "<trailer>" + trailer + "</trailer>" + newline; }
+            // thumb
+            if (String.IsNullOrEmpty(thumb) == false) { output += tab + "<thumb>" + thumb + "</thumb>" + newline; }
             // genre
             if (genres != null && genres.Any() == true)
             {

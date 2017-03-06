@@ -33,7 +33,10 @@ namespace NFO_Helper.TMDb
             else if (propName == "year") { return (await refreshData() == false ? null : myMovie.release_date.Substring(0, 4)); } // take the year from the release_date.
             else if (propName == "runtime") { return (await refreshData() == false ? null : myMovie.runtime + " min"); } // append minute label to runtime.
             else if (propName == "rating") { return (await refreshData() == false ? 0 : myMovie.vote_average); } // rating is TMDB VOTE_AVERAGE.
-
+            else if (propName == "original_title") { return (await refreshData() == false ? null : myMovie.original_title); }
+            else if (propName == "set") { return (await refreshData() == false ? null : myMovie.belongs_to_collection.name); } // return set name only.
+            else if (propName == "votes") { return (await refreshData() == false ? 0 : myMovie.vote_count); } // votes is TMDB VOTE_COUNT.
+            else if (propName == "tagline") { return (await refreshData() == false ? null : myMovie.tagline); }
             // did not find a property we want, return null!
             return null;
         }
@@ -175,6 +178,15 @@ namespace NFO_Helper.TMDb
                     }
                 }
                 return posters;
+            }
+            else if (propName == "thumb")
+            {
+                if (await refreshData() == false)
+                    return null;
+                Poster p = myImages.posters.OrderByDescending(poster => poster.vote_average).FirstOrDefault();
+                if (p == null)
+                    return null;
+                return (myImageBaseUrl + imageSize + p.file_path);
             }
             return null;
         }
