@@ -3,31 +3,28 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// TBD: want something to display the name of the current filter.
-//      display "temporary user filter" when changes have been made and not yet saved.
 // TBD: need to define the filter file format.
-// TBD: sort the list boxes when making changes, or just the one that has just been added to.
-// TBD: also want the filter to be able to define the order in which everything appears in the NFO.
-//      need [up] and [down] buttons for the filter list to be able to move each individual item up & down.
-//      this also would mean that we would NOT sort the filter list each time something is added!!
-//      this will likely require changes in the NFO.toXML method as well.
+//      currently seems to just be a comma separated list of the NFO fields that are 'in use'
+//      also - name string.
 
 namespace NFO_Helper
 {
     public partial class FilterForm : Form
     {
         public NFO_Filter filter { get; set; }
+        public string filterName { get; set; }
         private Dictionary<string, FilterItem> filterItems;
 
         public FilterForm(NFO_Filter currentFilter)
         {
             InitializeComponent();
-            filter = null;
+            
             filterItems = new Dictionary<string, FilterItem>();
             filterItems.Add(NFOConstants.Title, new NFO_Helper.FilterItem(NFOConstants.Title, this.listBox_available, this.listBox_filter));
             filterItems.Add(NFOConstants.OriginalTitle, new NFO_Helper.FilterItem(NFOConstants.OriginalTitle, this.listBox_available, this.listBox_filter));
@@ -45,7 +42,17 @@ namespace NFO_Helper
             filterItems.Add(NFOConstants.Votes, new NFO_Helper.FilterItem(NFOConstants.Votes, this.listBox_available, this.listBox_filter));
             filterItems.Add(NFOConstants.Thumb, new NFO_Helper.FilterItem(NFOConstants.Thumb, this.listBox_available, this.listBox_filter));
 
-            displayFilter(currentFilter);
+            comboBox_filterselect.Items.Insert(0, AppConstants.DefaultNfoFilterName);
+            if (String.Compare(currentFilter.name, AppConstants.DefaultNfoFilterName) == 0)
+            {
+                comboBox_filterselect.SelectedIndex = 0;
+            }
+            else
+            {
+                comboBox_filterselect.Items.Insert(1, currentFilter.name);
+                comboBox_filterselect.SelectedIndex = 1;
+            }
+            // Note: setting the combobox selection will trigger the display to be updated.
         }
 
         private void button_single_left_Click(object sender, EventArgs e)
@@ -60,6 +67,7 @@ namespace NFO_Helper
             FilterItem item;
             if (filterItems.TryGetValue(sel, out item) == true)
             {
+                updateDisplay_FilterModified();
                 item.makeInUse();
             }
         }
@@ -76,6 +84,7 @@ namespace NFO_Helper
             FilterItem item;
             if (filterItems.TryGetValue(sel, out item) == true)
             {
+                updateDisplay_FilterModified();
                 item.makeAvailable();
             }
         }
@@ -90,6 +99,11 @@ namespace NFO_Helper
                     continue;
                 items.Add(o.ToString());
             }
+
+            if (items.Any() == false)
+                return;
+
+            updateDisplay_FilterModified();
 
             foreach (string s in items)
             {
@@ -112,6 +126,11 @@ namespace NFO_Helper
                 items.Add(o.ToString());
             }
 
+            if (items.Any() == false)
+                return;
+
+            updateDisplay_FilterModified();
+
             foreach (string s in items)
             {
                 FilterItem item;
@@ -122,23 +141,11 @@ namespace NFO_Helper
             }
         }
 
-        private void button_default_Click(object sender, EventArgs e)
-        {
-            // configure available & filter lists for the default NFO filter.
-            DefaultNfoFilter def = new DefaultNfoFilter();
-            displayFilter(def);
-        }
-
         private void button_apply_Click(object sender, EventArgs e)
         {
             // close window, set return code & data so main form can get the filter.
             filter = new NFO_Filter();
-            foreach( object o in listBox_filter.Items )
-            {
-                if (o == null || String.IsNullOrEmpty(o.ToString()) == true)
-                    continue;
-                filter.NFO_PropertyList.Add(o.ToString());
-            }
+            filter.NFO_PropertyList = getFilterProperties();
             DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -150,18 +157,58 @@ namespace NFO_Helper
             this.Close();
         }
 
-        private void button_load_Click(object sender, EventArgs e)
-        {
-            // TBD: present user a filename selection prompt, asking for the filter file.
-        }
-
         private void button_saveas_Click(object sender, EventArgs e)
         {
-            // TBD prompt user for filename & path where to save the current filter.
+            // TBD: have the initial directory be the exe path, not the desktop.
+            SaveFileDialog sv = new SaveFileDialog();
+            sv.Filter = "NFO Filter files (*" + AppConstants.NfoFilterFileExtension + ")| *" + AppConstants.NfoFilterFileExtension + "|All files (*.*)|*.*";
+            sv.FilterIndex = 1;
+            sv.RestoreDirectory = true;
+            sv.AddExtension = true;
+            sv.DefaultExt = AppConstants.NfoFilterFileExtension;
+            sv.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            sv.OverwritePrompt = true;
+            sv.Title = "NFO_Helper - Save NFO Filter File...";
+
+            if (sv.ShowDialog() == DialogResult.OK)
+            {
+                // user has selected a filename to save.
+
+                // TBD: make sure there is no other filter currently 'saved' with this name in the user's config.
+
+                NFO_Filter_File file = new NFO_Filter_File();
+                file.fileName = sv.FileName;
+                file.filterName = Path.GetFileNameWithoutExtension(sv.FileName); // get the 'last part' of the filename before the extension as the filtername.
+                file.filterProperties = getFilterProperties();
+                bool writeRet = file.writeFile(sv.FileName);
+                if (writeRet == false)
+                {
+                    MessageBox.Show("Failed to create new NFO Filter File at '" + sv.FileName + "'.", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // add the filtername to the combobox & set that as the current selection.
+                int newIdx = comboBox_filterselect.Items.Add(file.filterName);
+                comboBox_filterselect.SelectedIndex = newIdx;
+
+                // save the name of this filter, so it can be pulled by the main form.
+                filterName = file.filterName;
+
+                // TBD: if a filename is given, persist this filename to the app configuration. want app config user value 'user NFO Filter File List' --> a list of filenames. ';' separated?
+            }
+        }
+
+        private void updateDisplay_FilterModified()
+        {
+            comboBox_filterselect.SelectedIndex = -1;
+            filterName = "[Temporary User Settings]";
         }
 
         private void displayFilter( NFO_Filter f )
         {
+            // first move everything to available, so we can then move only what is needed back to the filter.
+            button_all_right_Click(this, new EventArgs());
+
             foreach (string s in f.NFO_PropertyList)
             {
                 FilterItem item;
@@ -170,6 +217,42 @@ namespace NFO_Helper
                     item.makeInUse();
                 }
             }
+        }
+
+        private void comboBox_filterselect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_filterselect.SelectedIndex == -1)
+            {
+                return;
+            }
+            else if (comboBox_filterselect.SelectedIndex == 0)
+            {
+                // load defualt filter
+                DefaultNfoFilter def = new DefaultNfoFilter();
+                displayFilter(def);
+            }
+            else
+            {
+                // TBD: get name of filter from the combobox, load that filter, apply it to the display.
+            }
+        }
+
+        private void FilterForm_Load(object sender, EventArgs e)
+        {
+            // "reset" the form each time it is loaded.
+            filter = null;
+        }
+
+        private List<string> getFilterProperties()
+        {
+            List<string> retList = new List<string>();
+            foreach (object o in listBox_filter.Items)
+            {
+                if (o == null || String.IsNullOrEmpty(o.ToString()) == true)
+                    continue;
+                retList.Add(o.ToString());
+            }
+            return retList;
         }
     }
     public class FilterItem

@@ -10,8 +10,10 @@ namespace NFO_Helper
     {
         // filter will contain a list of 'properties' (string) that are requested for this NFO.
         public IList<string> NFO_PropertyList;
+        public string name { get; set; }
         public NFO_Filter()
         {
+            name = "New NFO Filter";
             NFO_PropertyList = new List<string>();
             NFO_PropertyList.Add(NFOConstants.Posters); // posters is required for all filters.
         }
@@ -21,6 +23,7 @@ namespace NFO_Helper
     {
         public DefaultNfoFilter()
         {
+            name = AppConstants.DefaultNfoFilterName;
             NFO_PropertyList.Add(NFOConstants.Title);
             NFO_PropertyList.Add(NFOConstants.Rating);
             NFO_PropertyList.Add(NFOConstants.Year);

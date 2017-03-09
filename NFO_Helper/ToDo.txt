@@ -3,7 +3,10 @@
 For Future Release(s)
 * display NFO data in a more editable way, in case some of the results are not desired, but just for this result.
 * add a 'release notes' section to the About form.
-* add more providers for movie data (IMDb, what else?)
+* NFO properties should be ordered. That is, the first item present in the will be the first XML tag to appear.
+*	NFO Filter will need to be updated as well.
+*	this means the FilterForm will need [up] and [down] buttons to move them up and down, as we can't just sort alphabetically.
+* if the NFO contains a 'thumb', do not allow user to change the image. the controls should be replaced with something to indicate this.
 
 For Soon:
 * show an 'error' image if there are no posters available, or if we fail to get one.

@@ -25,9 +25,11 @@ namespace NFO_Helper
             nfo = new NFO();
             currentPosterIndex = 0;
             InitializeProvidersAtStartup();
-            // TBD: check configuration if another filter has been used, load that instead.
-            // TBD: somehow indicate on the form which filter is in use.
+            // TBD: check configuration if another filter has been used, load that instead. 
+            //      need config value for 'last used user NFO Filter'. 
+            //      if can't load it, roll back to using default filter.
             filter = new DefaultNfoFilter();
+            toolStripStatusLabel_filtername.Text = AppConstants.NfoFilterLabelPrefix + filter.name;
         }
 
         private void InitializeProvidersAtStartup()
@@ -99,9 +101,11 @@ namespace NFO_Helper
                 return;
 
             // TBD: change default path to the same path as the exe.
-            // TBD: if the NFO contains a 'thumb', we do not need to save the image?
-            // TBD: if the NFO contains a 'thumb', do not allow user to change the image. 
-            //      the controls should be replaced with something to indicate this.
+            
+
+            // note: if the NFO contains a 'thumb', we do not need to save the image?
+            bool isThumb = String.IsNullOrEmpty(nfo.thumb) == false;
+            
 
             // save the NFO
             string defaultFileName = nfo.title + " (" + nfo.year + ")";
@@ -113,7 +117,7 @@ namespace NFO_Helper
             dlgNfo.DefaultExt = "nfo";
             dlgNfo.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             dlgNfo.OverwritePrompt = true;
-            dlgNfo.Title = "Export Step 1 of 2 - Save NFO File...";
+            dlgNfo.Title = isThumb ? "Save NFO File..." : "Export Step 1 of 2 - Save NFO File...";
             dlgNfo.FileName = defaultFileName;
 
             if (dlgNfo.ShowDialog() == DialogResult.OK)
@@ -123,7 +127,7 @@ namespace NFO_Helper
             }
 
             // save the Image
-            if (pictureBox_img.Image == null)
+            if (pictureBox_img.Image == null || isThumb == true)
                 return;
             
             SaveFileDialog dlgImg = new SaveFileDialog();
@@ -284,6 +288,7 @@ namespace NFO_Helper
                 {
                     // get the new filter from the dialog.
                     filter = form.filter;
+                    // TBD: update the app config 'last used user NFO Filter'
                 }
             }
         }
@@ -299,10 +304,14 @@ namespace NFO_Helper
 
         private void button_img_scroll_left_Click(object sender, EventArgs e)
         {
+            if (nfo.posterUrls.Count() == 0)
+                return;
+
             if (currentPosterIndex == 0)
                 currentPosterIndex = nfo.posterUrls.Count() - 1;
             else
                 currentPosterIndex--;
+
             string url = nfo.posterUrls[currentPosterIndex];
             label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + nfo.posterUrls.Count();
             loadImageAsync(url, pictureBox_img); // don't await
@@ -310,10 +319,14 @@ namespace NFO_Helper
 
         private void button_img_scroll_right_Click(object sender, EventArgs e)
         {
+            if (nfo.posterUrls.Count() == 0)
+                return;
+
             if (currentPosterIndex == nfo.posterUrls.Count() - 1 )
                 currentPosterIndex = 0;
             else
                 currentPosterIndex++;
+
             string url = nfo.posterUrls[currentPosterIndex];
             label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + nfo.posterUrls.Count();
             loadImageAsync(url, pictureBox_img); // don't await
