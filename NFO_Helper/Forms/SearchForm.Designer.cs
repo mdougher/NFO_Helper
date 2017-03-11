@@ -34,7 +34,6 @@
             this.label_results = new System.Windows.Forms.Label();
             this.panel_results = new System.Windows.Forms.Panel();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.panel_results.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -78,7 +77,6 @@
             // 
             this.panel_results.AutoScroll = true;
             this.panel_results.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel_results.Controls.Add(this.progressBar1);
             this.panel_results.Location = new System.Drawing.Point(13, 71);
             this.panel_results.Name = "panel_results";
             this.panel_results.Size = new System.Drawing.Size(399, 286);
@@ -86,7 +84,7 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(151, 52);
+            this.progressBar1.Location = new System.Drawing.Point(168, 44);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(100, 23);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
@@ -97,7 +95,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(423, 363);
+            this.ClientSize = new System.Drawing.Size(424, 364);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.panel_results);
             this.Controls.Add(this.label_results);
             this.Controls.Add(this.button_search);
@@ -108,7 +107,6 @@
             this.MinimizeBox = false;
             this.Name = "SearchForm";
             this.Text = "NFO_Helper Search";
-            this.panel_results.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

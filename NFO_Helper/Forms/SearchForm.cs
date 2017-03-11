@@ -20,6 +20,8 @@ namespace NFO_Helper
         {
             provider = p;
             InitializeComponent();
+            // need to move the progress bar so that it is in the right place. if i put it there in the designer, it makes it part of the panel...
+            progressBar1.Location = new Point(170, 190);
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -40,6 +42,7 @@ namespace NFO_Helper
             SearchResults results = null;
             try
             {
+                await Task.Delay(2000);
                 results = await provider.getSearchResultsAsync(textBox_search.Text);
             }
             catch (DataProviderException ex )
@@ -48,6 +51,9 @@ namespace NFO_Helper
             }
             if (results == null)
                 return;
+
+            label_results.Text = "Results: " + results.results.Count();
+            label_results.Show();
 
             // add controls to the panel. 
             // poster, title (year), id.
@@ -125,8 +131,6 @@ namespace NFO_Helper
 
                 y_off = sel.Location.Y + sel.Height + 2;
             }
-            label_results.Text = "Results: " + results.results.Count();
-            label_results.Show();
 
             endProgressIndication();
         }
@@ -176,5 +180,4 @@ namespace NFO_Helper
             }
         }
     }
-    
 }

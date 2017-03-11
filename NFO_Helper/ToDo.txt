@@ -11,4 +11,3 @@ For Future Release(s)
 
 For Soon:
 * show an 'error' image if there are no posters available, or if we fail to get one.
-* need a progress indicator on the search form.
