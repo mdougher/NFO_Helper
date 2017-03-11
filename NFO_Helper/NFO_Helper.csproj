@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppConstants.cs" />
+    <Compile Include="source\AppConstants.cs" />
     <Compile Include="Forms\FilterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,7 +81,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="source\DataProviderException.cs" />
+    <Compile Include="source\ExceptionTypes.cs" />
     <Compile Include="source\HttpHelpers.cs" />
     <Compile Include="source\INfoDataSource.cs" />
     <Compile Include="source\IDataProvider.cs" />
@@ -152,6 +152,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Filter File Format.txt" />
     <Content Include="NFO Format.txt" />
     <Content Include="ToDo.txt" />
   </ItemGroup>

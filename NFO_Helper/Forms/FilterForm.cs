@@ -9,9 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// TBD: need to define the filter file format.
-//      currently seems to just be a comma separated list of the NFO fields that are 'in use'
-//      also - name string.
+// TBD: still want a 'load' button for this form - the files may be moved after they were saved, so the app can remove them from its list and they would have to be re-created.
+// can avoid all that with a 'load' button :)
 
 namespace NFO_Helper
 {
@@ -19,12 +18,15 @@ namespace NFO_Helper
     {
         public NFO_Filter filter { get; set; }
         public string filterName { get; set; }
+        public string filterFileName { get; set; }
         private Dictionary<string, FilterItem> filterItems;
+        private Dictionary<string, NFO_Filter_File> filterFiles;
 
         public FilterForm(NFO_Filter currentFilter)
         {
             InitializeComponent();
-            
+
+            filterFiles = new Dictionary<string, NFO_Filter_File>();
             filterItems = new Dictionary<string, FilterItem>();
             filterItems.Add(NFOConstants.Title, new NFO_Helper.FilterItem(NFOConstants.Title, this.listBox_available, this.listBox_filter));
             filterItems.Add(NFOConstants.OriginalTitle, new NFO_Helper.FilterItem(NFOConstants.OriginalTitle, this.listBox_available, this.listBox_filter));
@@ -118,27 +120,8 @@ namespace NFO_Helper
         private void button_all_right_Click(object sender, EventArgs e)
         {
             // move all items from filter to available
-            List<string> items = new List<string>();
-            foreach (object o in listBox_filter.Items)
-            {
-                if (o == null || String.IsNullOrEmpty(o.ToString()) == true)
-                    continue;
-                items.Add(o.ToString());
-            }
-
-            if (items.Any() == false)
-                return;
-
-            updateDisplay_FilterModified();
-
-            foreach (string s in items)
-            {
-                FilterItem item;
-                if (filterItems.TryGetValue(s, out item) == true)
-                {
-                    item.makeAvailable();
-                }
-            }
+            if(allItemsAvailable() != 0)
+                updateDisplay_FilterModified();
         }
 
         private void button_apply_Click(object sender, EventArgs e)
@@ -159,55 +142,75 @@ namespace NFO_Helper
 
         private void button_saveas_Click(object sender, EventArgs e)
         {
-            // TBD: have the initial directory be the exe path, not the desktop.
+#if DEBUG
+            string initDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+#else
+            string initDir = AppDomain.CurrentDomain.BaseDirectory;
+#endif
             SaveFileDialog sv = new SaveFileDialog();
             sv.Filter = "NFO Filter files (*" + AppConstants.NfoFilterFileExtension + ")| *" + AppConstants.NfoFilterFileExtension + "|All files (*.*)|*.*";
             sv.FilterIndex = 1;
             sv.RestoreDirectory = true;
             sv.AddExtension = true;
             sv.DefaultExt = AppConstants.NfoFilterFileExtension;
-            sv.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            sv.InitialDirectory = initDir;
             sv.OverwritePrompt = true;
             sv.Title = "NFO_Helper - Save NFO Filter File...";
 
             if (sv.ShowDialog() == DialogResult.OK)
             {
                 // user has selected a filename to save.
-
-                // TBD: make sure there is no other filter currently 'saved' with this name in the user's config.
-
-                NFO_Filter_File file = new NFO_Filter_File();
-                file.fileName = sv.FileName;
-                file.filterName = Path.GetFileNameWithoutExtension(sv.FileName); // get the 'last part' of the filename before the extension as the filtername.
-                file.filterProperties = getFilterProperties();
-                bool writeRet = file.writeFile(sv.FileName);
-                if (writeRet == false)
+                string name = Path.GetFileNameWithoutExtension(sv.FileName); // get the 'last part' of the filename before the extension as the filtername.
+                NFO_Filter_File temp = null;
+                if (filterFiles.TryGetValue(name, out temp) == true)
                 {
-                    MessageBox.Show("Failed to create new NFO Filter File at '" + sv.FileName + "'.", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("A Filter with this name is already known. Please use a different name.", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // add the filtername to the combobox & set that as the current selection.
-                int newIdx = comboBox_filterselect.Items.Add(file.filterName);
-                comboBox_filterselect.SelectedIndex = newIdx;
+                NFO_Filter_File file = new NFO_Filter_File();
+                file.fileName = sv.FileName;
+                file.filter.name = name;
+                file.filter.NFO_PropertyList = getFilterProperties();
+                try
+                {
+                    file.writeFile(sv.FileName);
+                }
+                catch( NfoReadWriteException ex )
+                {
+                    MessageBox.Show("Failed to write NFO Filter File: " + ex.Message, "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
                 // save the name of this filter, so it can be pulled by the main form.
-                filterName = file.filterName;
+                filterName = file.filter.name;
+                filterFileName = file.fileName;
 
-                // TBD: if a filename is given, persist this filename to the app configuration. want app config user value 'user NFO Filter File List' --> a list of filenames. ';' separated?
+                // persist this filename to the app configuration.
+                if (String.IsNullOrEmpty(global::NFO_Helper.Settings.Default.KnownFilterFilenames) == false)
+                    global::NFO_Helper.Settings.Default.KnownFilterFilenames += ";";
+                global::NFO_Helper.Settings.Default.KnownFilterFilenames += filterFileName;
+                global::NFO_Helper.Settings.Default.Save();
+
+                // add the filtername to the combobox & set that as the current selection.
+                // add to the filterFiles before changing the selection!
+                int newIdx = comboBox_filterselect.Items.Add(file.filter.name);
+                filterFiles.Add(name, file);
+                comboBox_filterselect.SelectedIndex = newIdx;
             }
         }
 
         private void updateDisplay_FilterModified()
         {
             comboBox_filterselect.SelectedIndex = -1;
-            filterName = "[Temporary User Settings]";
+            filterName = AppConstants.TempNfoFilterName;
+            filterFileName = "";
         }
 
         private void displayFilter( NFO_Filter f )
         {
             // first move everything to available, so we can then move only what is needed back to the filter.
-            button_all_right_Click(this, new EventArgs());
+            allItemsAvailable();
 
             foreach (string s in f.NFO_PropertyList)
             {
@@ -219,8 +222,33 @@ namespace NFO_Helper
             }
         }
 
+        private int allItemsAvailable()
+        {
+            List<string> items = new List<string>();
+            foreach (object o in listBox_filter.Items)
+            {
+                if (o == null || String.IsNullOrEmpty(o.ToString()) == true)
+                    continue;
+                items.Add(o.ToString());
+            }
+
+            if (items.Any() == false)
+                return 0;
+
+            foreach (string s in items)
+            {
+                FilterItem item;
+                if (filterItems.TryGetValue(s, out item) == true)
+                {
+                    item.makeAvailable();
+                }
+            }
+            return items.Count();
+        }
+
         private void comboBox_filterselect_SelectedIndexChanged(object sender, EventArgs e)
         {
+            int sel = comboBox_filterselect.SelectedIndex;
             if (comboBox_filterselect.SelectedIndex == -1)
             {
                 return;
@@ -233,7 +261,18 @@ namespace NFO_Helper
             }
             else
             {
-                // TBD: get name of filter from the combobox, load that filter, apply it to the display.
+                NFO_Filter_File file = null;
+                
+                string name = (string)comboBox_filterselect.SelectedItem;
+                if (filterFiles.TryGetValue(name, out file) == true)
+                {
+                    displayFilter(file.filter);
+                    filterFileName = file.fileName;
+                }
+                else
+                {
+                    MessageBox.Show("Failed to find the filter file for '" + name + "'.", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -241,6 +280,49 @@ namespace NFO_Helper
         {
             // "reset" the form each time it is loaded.
             filter = null;
+
+            // prepare any filter files that have been previously used.
+            string listStr = global::NFO_Helper.Settings.Default.KnownFilterFilenames;
+            if (String.IsNullOrEmpty(listStr) == true)
+                return;
+
+            string validTokens = "";
+            char[] delims = { ';' };
+            string[] tokens = listStr.Split(delims);
+            foreach (string token in tokens)
+            {
+                NFO_Filter_File file = new NFO_Filter_File();
+                file.fileName = token;
+                try
+                {
+                    file.parseFile(token);
+                }
+                catch (NfoReadWriteException ex)
+                {
+                    continue;
+                }
+
+                NFO_Filter_File temp = null;
+                if (filterFiles.TryGetValue(file.filter.name, out temp) == true)
+                {
+                    // skip this one, there is one with this name already present.
+                    continue;
+                }
+                else
+                {
+                    filterFiles.Add(file.filter.name, file);
+                    comboBox_filterselect.Items.Add(file.filter.name);
+                    if (String.IsNullOrEmpty(validTokens) == false)
+                        validTokens += ";";
+                    validTokens += file.fileName;
+                }
+            }
+            if( String.Compare(listStr, validTokens) != 0 )
+            {
+                // at least one of the tokens was not used! update the config!
+                global::NFO_Helper.Settings.Default.KnownFilterFilenames = validTokens;
+                global::NFO_Helper.Settings.Default.Save();
+            }
         }
 
         private List<string> getFilterProperties()

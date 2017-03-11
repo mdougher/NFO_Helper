@@ -25,11 +25,31 @@ namespace NFO_Helper
             nfo = new NFO();
             currentPosterIndex = 0;
             InitializeProvidersAtStartup();
-            // TBD: check configuration if another filter has been used, load that instead. 
-            //      need config value for 'last used user NFO Filter'. 
-            //      if can't load it, roll back to using default filter.
-            filter = new DefaultNfoFilter();
-            toolStripStatusLabel_filtername.Text = AppConstants.NfoFilterLabelPrefix + filter.name;
+            // check configuration if another filter has been used, load that instead.
+            if (String.IsNullOrEmpty(global::NFO_Helper.Settings.Default.LastUsedFilterFilename) == false)
+            {
+                NFO_Filter_File file = new NFO_Filter_File();
+                try
+                {
+                    file.parseFile(global::NFO_Helper.Settings.Default.LastUsedFilterFilename);
+                    filter = file.filter;
+                }
+                catch (NfoReadWriteException ex)
+                {
+                    // if we fail to load that one, just go with the default.
+                    filter = new DefaultNfoFilter();
+                    // clear the 'last used' filter value.
+                    global::NFO_Helper.Settings.Default.LastUsedFilterFilename = "";
+                    global::NFO_Helper.Settings.Default.Save();
+                }                
+            }
+            else
+            {
+                // no 'last used' filter, use default.
+                filter = new DefaultNfoFilter();
+            }
+
+            updateFilterLabel();
         }
 
         private void InitializeProvidersAtStartup()
@@ -99,23 +119,29 @@ namespace NFO_Helper
 
             if (nfo == null || String.IsNullOrEmpty(nfo.title) == true)
                 return;
-
-            // TBD: change default path to the same path as the exe.
             
-
             // note: if the NFO contains a 'thumb', we do not need to save the image?
+            //      this also means that there is only a single export step, so update the titles of the prompt windows accordingly.
             bool isThumb = String.IsNullOrEmpty(nfo.thumb) == false;
-            
+#if DEBUG
+            string initDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+#else
+            string initDir = AppDomain.CurrentDomain.BaseDirectory;
+#endif
 
-            // save the NFO
+            // save the NFO, be careful to sanitize the output filenames so they do not contain invalid characters. This might not be perfect, but should work for most situations.
             string defaultFileName = nfo.title + " (" + nfo.year + ")";
+            foreach (var c in Path.GetInvalidFileNameChars())
+            {
+                defaultFileName = defaultFileName.Replace(c, '-');
+            }
             SaveFileDialog dlgNfo = new SaveFileDialog();
             dlgNfo.Filter = "nfo files (*.nfo)|*.nfo|All files (*.*)|*.*";
             dlgNfo.FilterIndex = 1;
             dlgNfo.RestoreDirectory = true;
             dlgNfo.AddExtension = true;
             dlgNfo.DefaultExt = "nfo";
-            dlgNfo.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            dlgNfo.InitialDirectory = initDir;
             dlgNfo.OverwritePrompt = true;
             dlgNfo.Title = isThumb ? "Save NFO File..." : "Export Step 1 of 2 - Save NFO File...";
             dlgNfo.FileName = defaultFileName;
@@ -136,7 +162,7 @@ namespace NFO_Helper
             dlgImg.RestoreDirectory = true;
             dlgImg.AddExtension = true;
             dlgImg.DefaultExt = "jpg";
-            dlgImg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            dlgImg.InitialDirectory = initDir;
             dlgImg.OverwritePrompt = true;
             dlgImg.Title = "Export Step 2 of 2 - Save Image File...";
             dlgImg.FileName = defaultFileName;
@@ -279,7 +305,7 @@ namespace NFO_Helper
             }
         }
 
-        private void nFOFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        private void NfoFilterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (FilterForm form = new FilterForm(filter))
             {
@@ -288,7 +314,20 @@ namespace NFO_Helper
                 {
                     // get the new filter from the dialog.
                     filter = form.filter;
-                    // TBD: update the app config 'last used user NFO Filter'
+                    updateFilterLabel();
+
+                    // based on the name of the new filter, we either need to update the last used filter filename or clear it.
+                    if( String.Compare(filter.name, AppConstants.DefaultNfoFilterName) == 0 ||
+                        String.Compare(filter.name, AppConstants.TempNfoFilterName) == 0 )
+                    {
+                        global::NFO_Helper.Settings.Default.LastUsedFilterFilename = "";
+                        global::NFO_Helper.Settings.Default.Save();
+                    }
+                    else
+                    {
+                        global::NFO_Helper.Settings.Default.LastUsedFilterFilename = form.filterFileName;
+                        global::NFO_Helper.Settings.Default.Save();
+                    }
                 }
             }
         }
@@ -330,6 +369,11 @@ namespace NFO_Helper
             string url = nfo.posterUrls[currentPosterIndex];
             label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + nfo.posterUrls.Count();
             loadImageAsync(url, pictureBox_img); // don't await
+        }
+
+        private void updateFilterLabel()
+        {
+            toolStripStatusLabel_filtername.Text = AppConstants.NfoFilterLabelPrefix + filter.name;
         }
     }
 }

@@ -182,7 +182,7 @@
             this.nFOFilterToolStripMenuItem.Name = "nFOFilterToolStripMenuItem";
             this.nFOFilterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.nFOFilterToolStripMenuItem.Text = "NFO Filter";
-            this.nFOFilterToolStripMenuItem.Click += new System.EventHandler(this.nFOFilterToolStripMenuItem_Click);
+            this.nFOFilterToolStripMenuItem.Click += new System.EventHandler(this.NfoFilterToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 

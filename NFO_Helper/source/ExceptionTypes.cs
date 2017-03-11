@@ -13,4 +13,12 @@ namespace NFO_Helper
         {
         }
     }
+    class NfoReadWriteException : System.Exception
+    {
+        public NfoReadWriteException( string text ) :
+            base( text )
+        {
+
+        }
+    }
 }

@@ -7,7 +7,8 @@ For Future Release(s)
 *	NFO Filter will need to be updated as well.
 *	this means the FilterForm will need [up] and [down] buttons to move them up and down, as we can't just sort alphabetically.
 * if the NFO contains a 'thumb', do not allow user to change the image. the controls should be replaced with something to indicate this.
+	* would be nice if there was a way to allow the user to select which image to use as the 'thumb', but i don't want to spend much time on that...
 
 For Soon:
 * show an 'error' image if there are no posters available, or if we fail to get one.
-* customizable NFO filters some kind of new form. let the user define them, save to file & read it when needed.
+* need a progress indicator on the search form.

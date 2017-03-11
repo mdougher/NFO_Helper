@@ -46,5 +46,29 @@ namespace NFO_Helper {
                 this["DesiredMinimumImageWidth"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastUsedFilterFilename {
+            get {
+                return ((string)(this["LastUsedFilterFilename"]));
+            }
+            set {
+                this["LastUsedFilterFilename"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string KnownFilterFilenames {
+            get {
+                return ((string)(this["KnownFilterFilenames"]));
+            }
+            set {
+                this["KnownFilterFilenames"] = value;
+            }
+        }
     }
 }

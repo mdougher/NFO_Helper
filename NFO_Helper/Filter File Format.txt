@@ -1,0 +1,14 @@
+﻿NFO_Helper -- Filter File Format
+"some_filter_name.nfo_filter"
+
+file format - JSON data.
+
+
+{
+  name: 'filter name',
+  NFO_PropertyList: [
+	'tag1',
+	'tag2',
+	'etc'
+  ]
+}
