@@ -9,9 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// TBD: still want a 'load' button for this form - the files may be moved after they were saved, so the app can remove them from its list and they would have to be re-created.
-// can avoid all that with a 'load' button :)
-
 namespace NFO_Helper
 {
     public partial class FilterForm : Form
@@ -55,6 +52,36 @@ namespace NFO_Helper
                 comboBox_filterselect.SelectedIndex = 1;
             }
             // Note: setting the combobox selection will trigger the display to be updated.
+        }
+
+        private void button_up_Click(object sender, EventArgs e)
+        {
+            // move item up the list.
+            if (listBox_filter.SelectedIndex == -1 || listBox_filter.SelectedIndex == 0)
+                return;
+
+            updateDisplay_FilterModified();
+
+            string selected = (string)listBox_filter.SelectedItem;
+            int selIdx = listBox_filter.SelectedIndex;
+            listBox_filter.Items.Remove(selected);
+            listBox_filter.Items.Insert(selIdx - 1, selected);
+            listBox_filter.SelectedIndex = selIdx - 1;
+        }
+
+        private void button_down_Click(object sender, EventArgs e)
+        {
+            // move item up the list.
+            if (listBox_filter.SelectedIndex == -1 || listBox_filter.Items.Count == 0 || listBox_filter.SelectedIndex == (listBox_filter.Items.Count - 1))
+                return;
+
+            updateDisplay_FilterModified();
+
+            string selected = (string)listBox_filter.SelectedItem;
+            int selIdx = listBox_filter.SelectedIndex;
+            listBox_filter.Items.Remove(selected);
+            listBox_filter.Items.Insert(selIdx + 1, selected);
+            listBox_filter.SelectedIndex = selIdx + 1;
         }
 
         private void button_single_left_Click(object sender, EventArgs e)
@@ -128,7 +155,7 @@ namespace NFO_Helper
         {
             // close window, set return code & data so main form can get the filter.
             filter = new NFO_Filter();
-            filter.NFO_PropertyList = getFilterProperties();
+            filter.setPropertyList(getFilterProperties());
             DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -171,7 +198,7 @@ namespace NFO_Helper
                 NFO_Filter_File file = new NFO_Filter_File();
                 file.fileName = sv.FileName;
                 file.filter.name = name;
-                file.filter.NFO_PropertyList = getFilterProperties();
+                file.filter.setPropertyList(getFilterProperties());
                 try
                 {
                     file.writeFile(sv.FileName);
@@ -211,8 +238,8 @@ namespace NFO_Helper
         {
             // first move everything to available, so we can then move only what is needed back to the filter.
             allItemsAvailable();
-
-            foreach (string s in f.NFO_PropertyList)
+            List<string> properties = f.getPropertyList();
+            foreach (string s in properties)
             {
                 FilterItem item;
                 if (filterItems.TryGetValue(s, out item) == true)
@@ -278,6 +305,9 @@ namespace NFO_Helper
 
         private void FilterForm_Load(object sender, EventArgs e)
         {
+            button_up.Text = char.ConvertFromUtf32(708);
+            button_down.Text = char.ConvertFromUtf32(709);
+
             // "reset" the form each time it is loaded.
             filter = null;
 
@@ -297,7 +327,7 @@ namespace NFO_Helper
                 {
                     file.parseFile(token);
                 }
-                catch (NfoReadWriteException ex)
+                catch (NfoReadWriteException)
                 {
                     continue;
                 }

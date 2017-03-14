@@ -30,8 +30,8 @@ namespace NFO_Helper.TMDb
             mySources.Add(new TMDbVideosSource(movieId));
 
             NFO nfo = new NFO(); // NFO to populate.
-
-            foreach( string nfoProp in propertiesFilter.NFO_PropertyList )
+            List<String> properties = propertiesFilter.getPropertyList();
+            foreach( string nfoProp in properties )
             {
                 // get this property from one of the sources.
                 foreach (INfoDataSource source in mySources)

@@ -34,7 +34,7 @@ namespace NFO_Helper
                     file.parseFile(global::NFO_Helper.Settings.Default.LastUsedFilterFilename);
                     filter = file.filter;
                 }
-                catch (NfoReadWriteException ex)
+                catch (NfoReadWriteException)
                 {
                     // if we fail to load that one, just go with the default.
                     filter = new DefaultNfoFilter();
@@ -117,12 +117,12 @@ namespace NFO_Helper
                 return;
             }
 
-            if (nfo == null || String.IsNullOrEmpty(nfo.title) == true)
+            if (nfo == null || String.IsNullOrEmpty((string)nfo.getProperty(NFOConstants.Title)) == true)
                 return;
             
             // note: if the NFO contains a 'thumb', we do not need to save the image?
             //      this also means that there is only a single export step, so update the titles of the prompt windows accordingly.
-            bool isThumb = String.IsNullOrEmpty(nfo.thumb) == false;
+            bool isThumb = String.IsNullOrEmpty((string)nfo.getProperty(NFOConstants.Thumb)) == false;
 #if DEBUG
             string initDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 #else
@@ -130,7 +130,7 @@ namespace NFO_Helper
 #endif
 
             // save the NFO, be careful to sanitize the output filenames so they do not contain invalid characters. This might not be perfect, but should work for most situations.
-            string defaultFileName = nfo.title + " (" + nfo.year + ")";
+            string defaultFileName = (string)nfo.getProperty(NFOConstants.Title) + " (" + (string)nfo.getProperty(NFOConstants.Year) + ")";
             foreach (var c in Path.GetInvalidFileNameChars())
             {
                 defaultFileName = defaultFileName.Replace(c, '-');
@@ -203,23 +203,12 @@ namespace NFO_Helper
 
             try
             {
-                try
-                {
-                    nfo = await provider.getNFOAsync(id, filter);
-                    await updateDialogWithNfoAsync();
-                }
-                catch (DataProviderException ex )
-                {
-                    MessageBox.Show(ex.Message, "NFO_Helper Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                nfo = await provider.getNFOAsync(id, filter);
+                await updateDialogWithNfoAsync();
             }
-            catch (ArgumentNullException e)
+            catch (DataProviderException ex)
             {
-                MessageBox.Show("Error while updating display for NFO: " + e.ToString(), "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (ArgumentException e)
-            {
-                MessageBox.Show("Error while updating display for NFO: " + e.ToString(), "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "NFO_Helper Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch(Exception e)
             {
@@ -232,15 +221,20 @@ namespace NFO_Helper
 
         private async Task<bool> updateDialogWithNfoAsync()
         {
-            if (nfo == null)
+            if (nfo == null )
                 return false;
 
             textBox_nfo.Text = nfo.toXML(true);
 
+            object prop = nfo.getProperty(NFOConstants.Posters);
+            if (prop == null)
+                return true;
+
             // display the first image result.
-            string url = nfo.posterUrls.FirstOrDefault();
+            List<String> posterList = (List<String>)prop;
+            string url = posterList.FirstOrDefault();
             currentPosterIndex = 0;
-            label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + nfo.posterUrls.Count();
+            label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + posterList.Count();
             await loadImageAsync(url, pictureBox_img);
             
             return true;
@@ -343,31 +337,39 @@ namespace NFO_Helper
 
         private void button_img_scroll_left_Click(object sender, EventArgs e)
         {
-            if (nfo.posterUrls.Count() == 0)
+            if (nfo == null )
                 return;
+            object prop = nfo.getProperty(NFOConstants.Posters);
+            if (prop == null)
+                return;
+            List<String> posterList = (List<String>)prop;
 
             if (currentPosterIndex == 0)
-                currentPosterIndex = nfo.posterUrls.Count() - 1;
+                currentPosterIndex = posterList.Count() - 1;
             else
                 currentPosterIndex--;
 
-            string url = nfo.posterUrls[currentPosterIndex];
-            label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + nfo.posterUrls.Count();
+            string url = posterList[currentPosterIndex];
+            label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + posterList.Count();
             loadImageAsync(url, pictureBox_img); // don't await
         }
 
         private void button_img_scroll_right_Click(object sender, EventArgs e)
         {
-            if (nfo.posterUrls.Count() == 0)
+            if (nfo == null)
                 return;
+            object prop = nfo.getProperty(NFOConstants.Posters);
+            if (prop == null)
+                return;
+            List<String> posterList = (List<String>)prop;
 
-            if (currentPosterIndex == nfo.posterUrls.Count() - 1 )
+            if (currentPosterIndex == posterList.Count() - 1 )
                 currentPosterIndex = 0;
             else
                 currentPosterIndex++;
 
-            string url = nfo.posterUrls[currentPosterIndex];
-            label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + nfo.posterUrls.Count();
+            string url = posterList[currentPosterIndex];
+            label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + posterList.Count();
             loadImageAsync(url, pictureBox_img); // don't await
         }
 

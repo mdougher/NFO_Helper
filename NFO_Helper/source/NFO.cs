@@ -8,70 +8,34 @@ namespace NFO_Helper
 {
     public class NFO 
     {
-        public string title { get; set; }
-        public string rating { get; set; }
-        public string year { get; set; }
-        public string outline { get; set; }
-        public string runtime { get; set; }
-        public string id { get; set; }
-        public string trailer { get; set; }
-        public IList<string> genres { get; set; }
-        public string director { get; set; }
-        public IList<string> actors { get; set; }
-        public string original_title { get; set; }
-        public string set { get; set; }
-        public string votes { get; set; }
-        public string tagline { get; set; }
-        public string thumb { get; set; }
-
-        // NFO_Helper extensions to the NFO format.
-        public IList<string> posterUrls { get; set; }
+        private List<Tuple<string,object>> properties { get; set; }
 
         public NFO()
         {
-            genres = new List<string>();
-            actors = new List<string>();
-            posterUrls = new List<string>();
+            properties = new List<Tuple<string, object>>();
             reset();
         }
 
         public void reset()
         {
-            title = "";
-            rating = "";
-            year = "";
-            outline = "";
-            runtime = "";
-            id = "";
-            genres.Clear();
-            director = "";
-            actors.Clear();
-            posterUrls.Clear();
-            original_title = "";
-            set = "";
-            votes = "";
-            tagline = "";
-            thumb = "";
+            properties.Clear();
         }
 
         public void setProperty(string propName, object typeValue)
         {
-            if (propName == NFOConstants.Title) { title = typeValue.ToString(); }
-            else if (propName == NFOConstants.Genres) { genres = (List<string>)typeValue; }
-            else if (propName == NFOConstants.Rating) { rating = typeValue.ToString(); }
-            else if (propName == NFOConstants.Outline) { outline = typeValue.ToString(); }
-            else if (propName == NFOConstants.Runtime) { runtime = typeValue.ToString(); }
-            else if (propName == NFOConstants.Year) { year = typeValue.ToString(); }
-            else if (propName == NFOConstants.Id) { id = typeValue.ToString(); }
-            else if (propName == NFOConstants.Trailer) { trailer = typeValue.ToString(); }
-            else if (propName == NFOConstants.Director) { director = typeValue.ToString(); }
-            else if (propName == NFOConstants.Actors) { actors = (List<string>)typeValue; }
-            else if (propName == NFOConstants.Posters) { posterUrls = (List<string>)typeValue; }
-            else if (propName == NFOConstants.OriginalTitle) { original_title = typeValue.ToString(); }
-            else if (propName == NFOConstants.Set) { set = typeValue.ToString(); }
-            else if (propName == NFOConstants.Votes) { votes = typeValue.ToString(); }
-            else if (propName == NFOConstants.Tagline) { tagline = typeValue.ToString(); }
-            else if (propName == NFOConstants.Thumb) { thumb = typeValue.ToString(); }
+            properties.Add(new Tuple<string, object>(propName, typeValue));
+        }
+
+        public object getProperty(string propName)
+        {
+            foreach (Tuple<string, object> property in properties)
+            {
+                if (String.Compare(property.Item1, propName) == 0)
+                {
+                    return property.Item2;
+                }
+            }
+            return null;
         }
         
         public string toXML(bool pretty)
@@ -81,57 +45,72 @@ namespace NFO_Helper
             string tab = (pretty ? "\t" : "");
             // start with the movie tag.
             output += "<movie>" + newline;
-            // title
-            if (String.IsNullOrEmpty(title) == false) { output += tab + "<title>" + title + "</title>" + newline; }
-            // original title
-            if (String.IsNullOrEmpty(original_title) == false) { output += tab + "<original_title>" + original_title + "</original_title>" + newline; }
-            // set
-            if (String.IsNullOrEmpty(set) == false) { output += tab + "<set>" + set + "</set>" + newline; }
-            // rating
-            if (String.IsNullOrEmpty(rating) == false) { output += tab + "<rating>" + rating + "</rating>" + newline; }
-            // votes
-            if (String.IsNullOrEmpty(votes) == false) { output += tab + "<votes>" + votes + "</votes>" + newline; }
-            // year
-            if (String.IsNullOrEmpty(year) == false) { output += tab + "<year>" + year + "</year>" + newline; }
-            // tagline
-            if (String.IsNullOrEmpty(tagline) == false) { output += tab + "<tagline>" + tagline + "</tagline>" + newline; }
-            // outline
-            if (String.IsNullOrEmpty(outline) == false) { output += tab + "<outline>" + outline + "</outline>" + newline; }
-            // runtime
-            if (String.IsNullOrEmpty(runtime) == false) { output += tab + "<runtime>" + runtime + "</runtime>" + newline; }
-            // id
-            if (String.IsNullOrEmpty(id) == false) { output += tab + "<id>" + id + "</id>" + newline; }
-            // trailer
-            if (String.IsNullOrEmpty(trailer) == false) { output += tab + "<trailer>" + trailer + "</trailer>" + newline; }
-            // thumb
-            if (String.IsNullOrEmpty(thumb) == false) { output += tab + "<thumb>" + thumb + "</thumb>" + newline; }
-            // genre
-            if (genres != null && genres.Any() == true)
+            foreach (Tuple<string,object> property in properties)
             {
-                output += tab + "<genre>";
-                string genrelist = "";
-                foreach (string g in genres)
+                // posters are not printed to XML, skip that property!
+                if (String.Compare(property.Item1, NFOConstants.Posters) == 0)
+                    continue;
+                // title
+                else if (String.Compare(property.Item1, NFOConstants.Title) == 0) { output += tab + "<title>" + property.Item2.ToString() + "</title>" + newline; }
+                // original title
+                else if (String.Compare(property.Item1, NFOConstants.OriginalTitle) == 0) { output += tab + "<original_title>" + property.Item2.ToString() + "</original_title>" + newline; }
+                // set
+                else if (String.Compare(property.Item1, NFOConstants.Set) == 0) { output += tab + "<set>" + property.Item2.ToString() + "</set>" + newline; }
+                // rating
+                else if (String.Compare(property.Item1, NFOConstants.Rating) == 0) { output += tab + "<rating>" + property.Item2.ToString() + "</rating>" + newline; }
+                // votes
+                else if (String.Compare(property.Item1, NFOConstants.Votes) == 0) { output += tab + "<votes>" + property.Item2.ToString() + "</votes>" + newline; }
+                // year
+                else if (String.Compare(property.Item1, NFOConstants.Year) == 0) { output += tab + "<year>" + property.Item2.ToString() + "</year>" + newline; }
+                // tagline
+                else if (String.Compare(property.Item1, NFOConstants.Tagline) == 0) { output += tab + "<tagline>" + property.Item2.ToString() + "</tagline>" + newline; }
+                // outline
+                else if (String.Compare(property.Item1, NFOConstants.Outline) == 0) { output += tab + "<outline>" + property.Item2.ToString() + "</outline>" + newline; }
+                // runtime
+                else if (String.Compare(property.Item1, NFOConstants.Runtime) == 0) { output += tab + "<runtime>" + property.Item2.ToString() + "</runtime>" + newline; }
+                // id
+                else if (String.Compare(property.Item1, NFOConstants.Id) == 0) { output += tab + "<id>" + property.Item2.ToString() + "</id>" + newline; }
+                // trailer
+                else if (String.Compare(property.Item1, NFOConstants.Trailer) == 0) { output += tab + "<trailer>" + property.Item2.ToString() + "</trailer>" + newline; }
+                // thumb
+                else if (String.Compare(property.Item1, NFOConstants.Thumb) == 0) { output += tab + "<thumb>" + property.Item2.ToString() + "</thumb>" + newline; }
+                // director
+                else if (String.Compare(property.Item1, NFOConstants.Director) == 0) { output += tab + "<director>" + property.Item2.ToString() + "</director>" + newline; }
+                // genre
+                else if (String.Compare(property.Item1, NFOConstants.Genres) == 0)
                 {
-                    if (String.IsNullOrEmpty(genrelist) == false)
+                    List<String> genres = (List<String>)property.Item2;
+                    if (genres != null && genres.Any() == true)
                     {
-                        genrelist += ",";
+                        output += tab + "<genre>";
+
+                        string genrelist = "";
+                        foreach (string g in genres)
+                        {
+                            if (String.IsNullOrEmpty(genrelist) == false)
+                            {
+                                genrelist += ",";
+                            }
+                            genrelist += g;
+                        }
+                        output += genrelist + "</genre>" + newline;
                     }
-                    genrelist += g;
                 }
-                output += genrelist + "</genre>" + newline;
-            }
-            // director
-            if (String.IsNullOrEmpty(director) == false) { output += tab + "<director>" + director + "</director>" + newline; }
-            // actor list
-            if (actors != null && actors.Any() == true)
-            {
-                foreach (String s in actors)
+                // actor list
+                else if( String.Compare(property.Item1, NFOConstants.Actors) == 0)
                 {
-                    output += tab + "<actor>" + newline;
-                    output += tab + tab + "<name>" + s + "</name>" + newline;
-                    output += tab + "</actor>" + newline;
+                    List<String> actors = (List<String>)property.Item2;
+                    if(actors != null && actors.Any() == true )
+                    {
+                        foreach (String s in actors)
+                        {
+                            output += tab + "<actor>" + newline;
+                            output += tab + tab + "<name>" + s + "</name>" + newline;
+                            output += tab + "</actor>" + newline;
+                        }
+                    }
                 }
-            }
+            } // end of foreach property
             // close movie tag
             output += "</movie>" + newline;
             return output;

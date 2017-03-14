@@ -9,13 +9,27 @@ namespace NFO_Helper
     public class NFO_Filter
     {
         // filter will contain a list of 'properties' (string) that are requested for this NFO.
-        public IList<string> NFO_PropertyList;
+        protected List<string> NFO_PropertyList { get; set; }
         public string name { get; set; }
         public NFO_Filter()
         {
-            name = "New NFO Filter";
+            name = AppConstants.TempNfoFilterName;
             NFO_PropertyList = new List<string>();
-            NFO_PropertyList.Add(NFOConstants.Posters); // posters is required for all filters.
+            // posters is required for all filters.
+            // this is why we 'hide' the property list, so that this item doesn't accidentally get removed.
+            NFO_PropertyList.Add(NFOConstants.Posters); 
+        }
+
+        public void setPropertyList( List<string> props )
+        {
+            foreach (string s in props)
+            {
+                NFO_PropertyList.Add(s);
+            }
+        }
+        public List<String> getPropertyList()
+        {
+            return NFO_PropertyList;
         }
     }
 

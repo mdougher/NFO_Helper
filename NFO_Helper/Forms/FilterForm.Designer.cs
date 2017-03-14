@@ -41,6 +41,8 @@
             this.comboBox_filterselect = new System.Windows.Forms.ComboBox();
             this.listBox_available = new System.Windows.Forms.ListBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.button_down = new System.Windows.Forms.Button();
+            this.button_up = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button_cancel
@@ -73,7 +75,7 @@
             // 
             // button_single_left
             // 
-            this.button_single_left.Location = new System.Drawing.Point(253, 79);
+            this.button_single_left.Location = new System.Drawing.Point(254, 115);
             this.button_single_left.Name = "button_single_left";
             this.button_single_left.Size = new System.Drawing.Size(35, 23);
             this.button_single_left.TabIndex = 6;
@@ -83,7 +85,7 @@
             // 
             // button_single_right
             // 
-            this.button_single_right.Location = new System.Drawing.Point(253, 108);
+            this.button_single_right.Location = new System.Drawing.Point(254, 144);
             this.button_single_right.Name = "button_single_right";
             this.button_single_right.Size = new System.Drawing.Size(35, 23);
             this.button_single_right.TabIndex = 7;
@@ -93,7 +95,7 @@
             // 
             // button_all_left
             // 
-            this.button_all_left.Location = new System.Drawing.Point(253, 156);
+            this.button_all_left.Location = new System.Drawing.Point(254, 194);
             this.button_all_left.Name = "button_all_left";
             this.button_all_left.Size = new System.Drawing.Size(35, 23);
             this.button_all_left.TabIndex = 8;
@@ -103,7 +105,7 @@
             // 
             // button_all_right
             // 
-            this.button_all_right.Location = new System.Drawing.Point(253, 185);
+            this.button_all_right.Location = new System.Drawing.Point(254, 223);
             this.button_all_right.Name = "button_all_right";
             this.button_all_right.Size = new System.Drawing.Size(35, 23);
             this.button_all_right.TabIndex = 9;
@@ -151,7 +153,7 @@
             // listBox_available
             // 
             this.listBox_available.FormattingEnabled = true;
-            this.listBox_available.Location = new System.Drawing.Point(294, 26);
+            this.listBox_available.Location = new System.Drawing.Point(294, 23);
             this.listBox_available.Name = "listBox_available";
             this.listBox_available.Size = new System.Drawing.Size(235, 238);
             this.listBox_available.Sorted = true;
@@ -166,11 +168,33 @@
             this.label4.TabIndex = 16;
             this.label4.Text = "Current Filter:";
             // 
+            // button_down
+            // 
+            this.button_down.Location = new System.Drawing.Point(254, 67);
+            this.button_down.Name = "button_down";
+            this.button_down.Size = new System.Drawing.Size(34, 23);
+            this.button_down.TabIndex = 17;
+            this.button_down.Text = "[dn]";
+            this.button_down.UseVisualStyleBackColor = true;
+            this.button_down.Click += new System.EventHandler(this.button_down_Click);
+            // 
+            // button_up
+            // 
+            this.button_up.Location = new System.Drawing.Point(254, 38);
+            this.button_up.Name = "button_up";
+            this.button_up.Size = new System.Drawing.Size(34, 23);
+            this.button_up.TabIndex = 18;
+            this.button_up.Text = "[up]";
+            this.button_up.UseVisualStyleBackColor = true;
+            this.button_up.Click += new System.EventHandler(this.button_up_Click);
+            // 
             // FilterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(541, 300);
+            this.Controls.Add(this.button_up);
+            this.Controls.Add(this.button_down);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBox_filterselect);
             this.Controls.Add(this.button_saveas);
@@ -210,5 +234,7 @@
         private System.Windows.Forms.ComboBox comboBox_filterselect;
         private System.Windows.Forms.ListBox listBox_available;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button_down;
+        private System.Windows.Forms.Button button_up;
     }
 }

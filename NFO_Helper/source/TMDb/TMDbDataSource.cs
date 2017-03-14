@@ -34,7 +34,7 @@ namespace NFO_Helper.TMDb
             else if (propName == NFOConstants.Runtime) { return (await refreshData() == false ? null : myMovie.runtime + " min"); } // append minute label to runtime.
             else if (propName == NFOConstants.Rating) { return (await refreshData() == false ? 0 : myMovie.vote_average); } // rating is TMDB VOTE_AVERAGE.
             else if (propName == NFOConstants.OriginalTitle) { return (await refreshData() == false ? null : myMovie.original_title); }
-            else if (propName == NFOConstants.Set) { return (await refreshData() == false ? null : myMovie.belongs_to_collection.name); } // return set name only.
+            else if (propName == NFOConstants.Set) { return (await refreshData() == false ? null : (myMovie.belongs_to_collection == null ? null : myMovie.belongs_to_collection.name)); } // return set name only.
             else if (propName == NFOConstants.Votes) { return (await refreshData() == false ? 0 : myMovie.vote_count); } // votes is TMDB VOTE_COUNT.
             else if (propName == NFOConstants.Tagline) { return (await refreshData() == false ? null : myMovie.tagline); }
             // did not find a property we want, return null!
