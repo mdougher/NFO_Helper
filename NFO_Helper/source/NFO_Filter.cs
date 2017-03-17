@@ -39,16 +39,17 @@ namespace NFO_Helper
         {
             name = AppConstants.DefaultNfoFilterName;
             NFO_PropertyList.Add(NFOConstants.Title);
-            NFO_PropertyList.Add(NFOConstants.Rating);
             NFO_PropertyList.Add(NFOConstants.Year);
+            NFO_PropertyList.Add(NFOConstants.Tagline);
+            NFO_PropertyList.Add(NFOConstants.Genres);
             NFO_PropertyList.Add(NFOConstants.Outline);
             NFO_PropertyList.Add(NFOConstants.Runtime);
+            NFO_PropertyList.Add(NFOConstants.Rating);
             NFO_PropertyList.Add(NFOConstants.Id);
             NFO_PropertyList.Add(NFOConstants.Trailer);
-            NFO_PropertyList.Add(NFOConstants.Genres);
             NFO_PropertyList.Add(NFOConstants.Director);
             NFO_PropertyList.Add(NFOConstants.Actors);
-            NFO_PropertyList.Add(NFOConstants.Tagline);
+            
         }
     }
 }
