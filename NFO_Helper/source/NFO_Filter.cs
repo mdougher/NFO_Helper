@@ -9,7 +9,7 @@ namespace NFO_Helper
     public class NFO_Filter
     {
         // filter will contain a list of 'properties' (string) that are requested for this NFO.
-        protected List<string> NFO_PropertyList { get; set; }
+        public List<string> NFO_PropertyList { get; set; }
         public string name { get; set; }
         public NFO_Filter()
         {

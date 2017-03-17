@@ -41,17 +41,83 @@ namespace NFO_Helper
             filterItems.Add(NFOConstants.Votes, new NFO_Helper.FilterItem(NFOConstants.Votes, this.listBox_available, this.listBox_filter));
             filterItems.Add(NFOConstants.Thumb, new NFO_Helper.FilterItem(NFOConstants.Thumb, this.listBox_available, this.listBox_filter));
 
+            button_up.Text = char.ConvertFromUtf32(708);
+            button_down.Text = char.ConvertFromUtf32(709);
+
             comboBox_filterselect.Items.Insert(0, AppConstants.DefaultNfoFilterName);
+
+            // prepare any filter files that have been previously used.
+            string listStr = global::NFO_Helper.Settings.Default.KnownFilterFilenames;
+            if (String.IsNullOrEmpty(listStr) == true)
+                return;
+
+            string validTokens = "";
+            char[] delims = { ';' };
+            string[] tokens = listStr.Split(delims);
+            foreach (string token in tokens)
+            {
+                NFO_Filter_File file = new NFO_Filter_File();
+                file.fileName = token;
+                try
+                {
+                    file.parseFile(token);
+                }
+                catch (NfoReadWriteException)
+                {
+                    continue;
+                }
+
+                NFO_Filter_File temp = null;
+                if (filterFiles.TryGetValue(file.filter.name, out temp) == true)
+                {
+                    // skip this one, there is one with this name already present.
+                    continue;
+                }
+                else
+                {
+                    filterFiles.Add(file.filter.name, file);
+                    comboBox_filterselect.Items.Add(file.filter.name);
+                    if (String.IsNullOrEmpty(validTokens) == false)
+                        validTokens += ";";
+                    validTokens += file.fileName;
+                }
+            }
+            if (String.Compare(listStr, validTokens) != 0)
+            {
+                // at least one of the tokens was not used! update the config!
+                global::NFO_Helper.Settings.Default.KnownFilterFilenames = validTokens;
+                global::NFO_Helper.Settings.Default.Save();
+            }
+
+
             if (String.Compare(currentFilter.name, AppConstants.DefaultNfoFilterName) == 0)
             {
                 comboBox_filterselect.SelectedIndex = 0;
+                // changing selected index will update filter.
+            }
+            else if (String.Compare(currentFilter.name, AppConstants.TempNfoFilterName) == 0)
+            {
+                // we will not set a selection, so we must update the display manually.
+                displayFilter(currentFilter);
+                filterName = AppConstants.TempNfoFilterName;
+                filterFileName = null;
             }
             else
             {
-                comboBox_filterselect.Items.Insert(1, currentFilter.name);
-                comboBox_filterselect.SelectedIndex = 1;
+                // find this one in the combobox & set that as the selection.
+                int index = 0;
+                foreach( string item in comboBox_filterselect.Items)
+                {
+                    if (item == currentFilter.name)
+                    {
+                        comboBox_filterselect.SelectedIndex = index;
+                        // changing selected index will update filter.
+                        break;
+                    }
+                    index++;
+                }
             }
-            // Note: setting the combobox selection will trigger the display to be updated.
+            // Note: setting the combobox selection will trigger the display to be updated with the contents of that filter.
         }
 
         private void button_up_Click(object sender, EventArgs e)
@@ -156,6 +222,7 @@ namespace NFO_Helper
             // close window, set return code & data so main form can get the filter.
             filter = new NFO_Filter();
             filter.setPropertyList(getFilterProperties());
+            filter.name = filterName;
             DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -278,6 +345,8 @@ namespace NFO_Helper
             int sel = comboBox_filterselect.SelectedIndex;
             if (comboBox_filterselect.SelectedIndex == -1)
             {
+                filterName = null;
+                filterFileName = null;
                 return;
             }
             else if (comboBox_filterselect.SelectedIndex == 0)
@@ -285,6 +354,8 @@ namespace NFO_Helper
                 // load defualt filter
                 DefaultNfoFilter def = new DefaultNfoFilter();
                 displayFilter(def);
+                filterName = AppConstants.DefaultNfoFilterName;
+                filterFileName = null;
             }
             else
             {
@@ -295,6 +366,7 @@ namespace NFO_Helper
                 {
                     displayFilter(file.filter);
                     filterFileName = file.fileName;
+                    filterName = file.filter.name;
                 }
                 else
                 {
@@ -305,54 +377,7 @@ namespace NFO_Helper
 
         private void FilterForm_Load(object sender, EventArgs e)
         {
-            button_up.Text = char.ConvertFromUtf32(708);
-            button_down.Text = char.ConvertFromUtf32(709);
-
-            // "reset" the form each time it is loaded.
-            filter = null;
-
-            // prepare any filter files that have been previously used.
-            string listStr = global::NFO_Helper.Settings.Default.KnownFilterFilenames;
-            if (String.IsNullOrEmpty(listStr) == true)
-                return;
-
-            string validTokens = "";
-            char[] delims = { ';' };
-            string[] tokens = listStr.Split(delims);
-            foreach (string token in tokens)
-            {
-                NFO_Filter_File file = new NFO_Filter_File();
-                file.fileName = token;
-                try
-                {
-                    file.parseFile(token);
-                }
-                catch (NfoReadWriteException)
-                {
-                    continue;
-                }
-
-                NFO_Filter_File temp = null;
-                if (filterFiles.TryGetValue(file.filter.name, out temp) == true)
-                {
-                    // skip this one, there is one with this name already present.
-                    continue;
-                }
-                else
-                {
-                    filterFiles.Add(file.filter.name, file);
-                    comboBox_filterselect.Items.Add(file.filter.name);
-                    if (String.IsNullOrEmpty(validTokens) == false)
-                        validTokens += ";";
-                    validTokens += file.fileName;
-                }
-            }
-            if( String.Compare(listStr, validTokens) != 0 )
-            {
-                // at least one of the tokens was not used! update the config!
-                global::NFO_Helper.Settings.Default.KnownFilterFilenames = validTokens;
-                global::NFO_Helper.Settings.Default.Save();
-            }
+            
         }
 
         private List<string> getFilterProperties()
@@ -365,6 +390,60 @@ namespace NFO_Helper
                 retList.Add(o.ToString());
             }
             return retList;
+        }
+
+        private void button_load_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.AddExtension = true;
+            dlg.DefaultExt = AppConstants.NfoFilterFileExtension;
+            dlg.Filter = "NFO Filter files (*" + AppConstants.NfoFilterFileExtension + ")| *" + AppConstants.NfoFilterFileExtension + "|All files (*.*)|*.*";
+            dlg.FilterIndex = 0;
+            dlg.RestoreDirectory = true;
+            dlg.Title = "NFO_Helper - Load NFO Filter File...";
+#if DEBUG
+            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+#else
+            dlg.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+#endif
+            if( dlg.ShowDialog() == DialogResult.OK )
+            {
+                string name = Path.GetFileNameWithoutExtension(dlg.FileName); // get the 'last part' of the filename before the extension as the filtername.
+                NFO_Filter_File temp = null;
+                if (filterFiles.TryGetValue(name, out temp) == true)
+                {
+                    MessageBox.Show("A Filter with this name is already known. Please use a different name.", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                NFO_Filter_File file = new NFO_Filter_File();
+                file.fileName = dlg.FileName;
+                try
+                {
+                    file.parseFile(dlg.FileName);
+                }
+                catch (NfoReadWriteException ex)
+                {
+                    MessageBox.Show("Failed to load NFO Filter File: " + ex.Message, "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // save the name of this filter, so it can be pulled by the main form.
+                filterName = file.filter.name;
+                filterFileName = file.fileName;
+
+                // persist this filename to the app configuration.
+                if (String.IsNullOrEmpty(global::NFO_Helper.Settings.Default.KnownFilterFilenames) == false)
+                    global::NFO_Helper.Settings.Default.KnownFilterFilenames += ";";
+                global::NFO_Helper.Settings.Default.KnownFilterFilenames += filterFileName;
+                global::NFO_Helper.Settings.Default.Save();
+
+                // add the filtername to the combobox & set that as the current selection.
+                // add to the filterFiles before changing the selection!
+                int newIdx = comboBox_filterselect.Items.Add(file.filter.name);
+                filterFiles.Add(name, file);
+                comboBox_filterselect.SelectedIndex = newIdx;
+            }
         }
     }
     public class FilterItem

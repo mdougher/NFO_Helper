@@ -43,6 +43,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.button_down = new System.Windows.Forms.Button();
             this.button_up = new System.Windows.Forms.Button();
+            this.button_load = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button_cancel
@@ -144,9 +145,9 @@
             // comboBox_filterselect
             // 
             this.comboBox_filterselect.FormattingEnabled = true;
-            this.comboBox_filterselect.Location = new System.Drawing.Point(85, 267);
+            this.comboBox_filterselect.Location = new System.Drawing.Point(50, 271);
             this.comboBox_filterselect.Name = "comboBox_filterselect";
-            this.comboBox_filterselect.Size = new System.Drawing.Size(162, 21);
+            this.comboBox_filterselect.Size = new System.Drawing.Size(157, 21);
             this.comboBox_filterselect.TabIndex = 15;
             this.comboBox_filterselect.SelectedIndexChanged += new System.EventHandler(this.comboBox_filterselect_SelectedIndexChanged);
             // 
@@ -162,11 +163,11 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 270);
+            this.label4.Location = new System.Drawing.Point(12, 276);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(69, 13);
+            this.label4.Size = new System.Drawing.Size(32, 13);
             this.label4.TabIndex = 16;
-            this.label4.Text = "Current Filter:";
+            this.label4.Text = "Filter:";
             // 
             // button_down
             // 
@@ -188,11 +189,22 @@
             this.button_up.UseVisualStyleBackColor = true;
             this.button_up.Click += new System.EventHandler(this.button_up_Click);
             // 
+            // button_load
+            // 
+            this.button_load.Location = new System.Drawing.Point(213, 270);
+            this.button_load.Name = "button_load";
+            this.button_load.Size = new System.Drawing.Size(75, 23);
+            this.button_load.TabIndex = 19;
+            this.button_load.Text = "Load...";
+            this.button_load.UseVisualStyleBackColor = true;
+            this.button_load.Click += new System.EventHandler(this.button_load_Click);
+            // 
             // FilterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(541, 300);
+            this.Controls.Add(this.button_load);
             this.Controls.Add(this.button_up);
             this.Controls.Add(this.button_down);
             this.Controls.Add(this.label4);
@@ -236,5 +248,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button_down;
         private System.Windows.Forms.Button button_up;
+        private System.Windows.Forms.Button button_load;
     }
 }
