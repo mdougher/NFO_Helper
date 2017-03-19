@@ -7,4 +7,4 @@ For Future Release(s)
 	* would be nice if there was a way to allow the user to select which image to use as the 'thumb', but i don't want to spend much time on that...
 * show an 'error' image if there are no posters available, or if we fail to get one.
 
-* fill out proper assembly info for the About Form.
+* move progress indicator into the status bar at bottom of window.

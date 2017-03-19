@@ -77,7 +77,7 @@ namespace NFO_Helper.TMDb
                 break; // take the first.
             }
 
-            SearchResults res = new global::NFO_Helper.SearchResults();
+            SearchResults res = new SearchResults();
             Search srch = await TMDbApi.getMovieSearchAsync(global::NFO_Helper.Settings.Default.TMDb_Api_Key, inputTitle, inputYear);
 
             if (srch != null)

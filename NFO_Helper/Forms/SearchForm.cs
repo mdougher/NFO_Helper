@@ -42,7 +42,6 @@ namespace NFO_Helper
             SearchResults results = null;
             try
             {
-                await Task.Delay(2000);
                 results = await provider.getSearchResultsAsync(textBox_search.Text);
             }
             catch (DataProviderException ex )

@@ -10,6 +10,7 @@ namespace NFO_Helper
     {
         public const string DefaultNfoFilterName = "[Default NFO Filter]";
         public const string NfoFilterLabelPrefix = "Current NFO Filter: ";
+        public const string MovieIdLabelPrefix = "Selected Movie Id: ";
         public const string NfoFilterFileExtension = ".nfo_filter";
         public const string TempNfoFilterName = "[Temporary User Settings]";
     }

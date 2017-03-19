@@ -49,33 +49,74 @@ namespace NFO_Helper
             }
 
             updateFilterLabel();
+            updateMovieIdLabel("");
         }
 
-        private void button_update_Click(object sender, EventArgs e)
+        private async void button_update_Click(object sender, EventArgs e)
         {
-            // get id from the text box.
-            if (String.IsNullOrEmpty(textBox_id.Text) == true)
+            if (String.IsNullOrEmpty(textBox_search.Text) == true)
                 return;
 
-            // if something is already being displayed, clear everything before updating again.
-            if (String.IsNullOrEmpty(textBox_nfo.Text) == false)
-                clear_nfo_data();
+            startProgressIndication();
 
-            // don't await
-            updateNfoAsync(textBox_id.Text);
+            SearchResults results = null;
+            try
+            {
+                results = await provider.getSearchResultsAsync(textBox_search.Text);
+            }
+            catch (DataProviderException ex)
+            {
+                MessageBox.Show(ex.Message, "NFO_Helper Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            if (results != null)
+            {
+                SearchResult res = null;
+                int numResults = results.results.Count();
+                if (numResults == 0 || numResults < 0)
+                {
+                    MessageBox.Show("No Search results found! Please try again!");
+                }
+                else if (numResults == 1)
+                {
+                    // a single result was found, assume to be an exact match. show that result now.
+                    res = results.results.First();
+                }
+                else
+                {
+                    // many results, show the search results form to let the user pick which one they want.
+                    using (SearchResultsForm form = new SearchResultsForm(results))
+                    {
+                        if (form.ShowDialog() == DialogResult.OK)
+                        {
+                            res = form.selectedResult;
+                        }
+                    }
+                }
+
+                if (res != null)
+                {
+                    textBox_search.Text = res.Title + " (" + res.Year + ")";
+                    updateMovieIdLabel(res.ID);
+                    await updateNfoAsync(res.ID);
+                    button_export.Focus();
+                }
+            }
+            endProgressIndication();
         }
         
         private void button_clear_Click(object sender, EventArgs e)
         {
             // clear everything in the GUI.
             clear_nfo_data();
-            textBox_id.Clear();
+            textBox_search.Clear();
         }
+
         private void clear_nfo_data()
         {
             // clear everything related to the results of this item.
             nfo.reset();
             textBox_nfo.Clear();
+            updateMovieIdLabel("");
             pictureBox_img.Image = null;
             currentPosterIndex = 0;
             label_image_num.Text = "Image 0 of 0";
@@ -140,27 +181,13 @@ namespace NFO_Helper
             }
         }
 
-        private void button_search_Click(object sender, EventArgs e)
-        {            
-            using (SearchForm search = new SearchForm(provider))
-            {
-                if (search.ShowDialog() == DialogResult.OK)
-                {
-                    textBox_id.Text = search.ID;
-                    button_update_Click(this, new EventArgs());
-                }
-            }
-        }
-
         private void button_close_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private async void updateNfoAsync(string id)
+        private async Task updateNfoAsync(string id)
         {
-            startProgressIndication();
-
             try
             {
                 nfo = await provider.getNFOAsync(id, filter);
@@ -174,9 +201,6 @@ namespace NFO_Helper
             {
                 MessageBox.Show("Error while updating display for NFO: " + e.ToString(), "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            endProgressIndication();
-            button_export.Focus();
         }
 
         private async Task<bool> updateDialogWithNfoAsync()
@@ -195,7 +219,7 @@ namespace NFO_Helper
             string url = posterList.FirstOrDefault();
             currentPosterIndex = 0;
             label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + posterList.Count();
-            await loadImageAsync(url, pictureBox_img);
+            loadImageAsync(url, pictureBox_img); // don't await.
             
             return true;
         }
@@ -217,9 +241,8 @@ namespace NFO_Helper
         private void startProgressIndication()
         {
             progressBar1.Show();
-            textBox_id.Enabled = false;
+            textBox_search.Enabled = false;
             textBox_nfo.Enabled = false;
-            button_search.Enabled = false;
             button_update.Enabled = false;
             button_clear.Enabled = false;
             button_export.Enabled = false;
@@ -229,9 +252,8 @@ namespace NFO_Helper
         private void endProgressIndication()
         {
             progressBar1.Hide();
-            textBox_id.Enabled = true;
+            textBox_search.Enabled = true;
             textBox_nfo.Enabled = true;
-            button_search.Enabled = true;
             button_update.Enabled = true;
             button_clear.Enabled = true;
             button_export.Enabled = true;
@@ -331,6 +353,23 @@ namespace NFO_Helper
         private void updateFilterLabel()
         {
             toolStripStatusLabel_filtername.Text = AppConstants.NfoFilterLabelPrefix + filter.name;
+        }
+
+        private void updateMovieIdLabel(string id)
+        {
+            if (string.IsNullOrEmpty(id) == true)
+                toolStripStatusLabel_movieid.Text = "";
+            else
+                toolStripStatusLabel_movieid.Text = AppConstants.MovieIdLabelPrefix + id;
+        }
+
+        private void textBox_search_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                button_update_Click(this, new EventArgs());
+            }
         }
     }
 }

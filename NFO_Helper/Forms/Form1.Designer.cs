@@ -28,9 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox_id = new System.Windows.Forms.TextBox();
-            this.button_search = new System.Windows.Forms.Button();
             this.button_update = new System.Windows.Forms.Button();
             this.button_clear = new System.Windows.Forms.Button();
             this.button_export = new System.Windows.Forms.Button();
@@ -49,37 +46,13 @@
             this.label_image_num = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel_filtername = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel_movieid = new System.Windows.Forms.ToolStripStatusLabel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox_search = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_img)).BeginInit();
             this.MainMenu.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(84, 34);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(179, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Search for Movie, or Enter TMDb Id:";
-            // 
-            // textBox_id
-            // 
-            this.textBox_id.Location = new System.Drawing.Point(260, 30);
-            this.textBox_id.Name = "textBox_id";
-            this.textBox_id.Size = new System.Drawing.Size(80, 20);
-            this.textBox_id.TabIndex = 1;
-            this.textBox_id.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_id_KeyPress);
-            // 
-            // button_search
-            // 
-            this.button_search.Location = new System.Drawing.Point(3, 29);
-            this.button_search.Name = "button_search";
-            this.button_search.Size = new System.Drawing.Size(75, 23);
-            this.button_search.TabIndex = 2;
-            this.button_search.Text = "Search...";
-            this.button_search.UseVisualStyleBackColor = true;
-            this.button_search.Click += new System.EventHandler(this.button_search_Click);
             // 
             // button_update
             // 
@@ -173,14 +146,14 @@
             // appSettingsToolStripMenuItem
             // 
             this.appSettingsToolStripMenuItem.Name = "appSettingsToolStripMenuItem";
-            this.appSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.appSettingsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.appSettingsToolStripMenuItem.Text = "App Settings";
             this.appSettingsToolStripMenuItem.Click += new System.EventHandler(this.appSettingsToolStripMenuItem_Click);
             // 
             // nFOFilterToolStripMenuItem
             // 
             this.nFOFilterToolStripMenuItem.Name = "nFOFilterToolStripMenuItem";
-            this.nFOFilterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.nFOFilterToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.nFOFilterToolStripMenuItem.Text = "NFO Filter";
             this.nFOFilterToolStripMenuItem.Click += new System.EventHandler(this.NfoFilterToolStripMenuItem_Click);
             // 
@@ -232,7 +205,8 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel_filtername});
+            this.toolStripStatusLabel_filtername,
+            this.toolStripStatusLabel_movieid});
             this.statusStrip1.Location = new System.Drawing.Point(0, 362);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(668, 22);
@@ -242,14 +216,38 @@
             // toolStripStatusLabel_filtername
             // 
             this.toolStripStatusLabel_filtername.Name = "toolStripStatusLabel_filtername";
-            this.toolStripStatusLabel_filtername.Size = new System.Drawing.Size(118, 17);
-            this.toolStripStatusLabel_filtername.Text = "toolStripStatusLabel1";
+            this.toolStripStatusLabel_filtername.Size = new System.Drawing.Size(126, 17);
+            this.toolStripStatusLabel_filtername.Text = "NFO Filter Name Label";
+            // 
+            // toolStripStatusLabel_movieid
+            // 
+            this.toolStripStatusLabel_movieid.Name = "toolStripStatusLabel_movieid";
+            this.toolStripStatusLabel_movieid.Size = new System.Drawing.Size(121, 17);
+            this.toolStripStatusLabel_movieid.Text = "TMDb Movie ID Label";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(0, 34);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Search for a Movie:";
+            // 
+            // textBox_search
+            // 
+            this.textBox_search.Location = new System.Drawing.Point(106, 31);
+            this.textBox_search.Name = "textBox_search";
+            this.textBox_search.Size = new System.Drawing.Size(234, 20);
+            this.textBox_search.TabIndex = 15;
+            this.textBox_search.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_search_KeyPress);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(668, 384);
+            this.Controls.Add(this.textBox_search);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label_image_num);
             this.Controls.Add(this.button_img_scroll_right);
@@ -261,8 +259,6 @@
             this.Controls.Add(this.button_export);
             this.Controls.Add(this.button_clear);
             this.Controls.Add(this.button_update);
-            this.Controls.Add(this.button_search);
-            this.Controls.Add(this.textBox_id);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.MainMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -281,10 +277,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox_id;
-        private System.Windows.Forms.Button button_search;
         private System.Windows.Forms.Button button_update;
         private System.Windows.Forms.Button button_clear;
         private System.Windows.Forms.Button button_export;
@@ -303,6 +295,9 @@
         private System.Windows.Forms.ToolStripMenuItem nFOFilterToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_filtername;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_movieid;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox_search;
     }
 }
 
