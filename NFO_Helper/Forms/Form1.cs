@@ -21,10 +21,9 @@ namespace NFO_Helper
         public Form1()
         {
             InitializeComponent();
-            provider = null;
+            provider = new TMDb.TMDbDataProvider();
             nfo = new NFO();
             currentPosterIndex = 0;
-            InitializeProvidersAtStartup();
             // check configuration if another filter has been used, load that instead.
             if (String.IsNullOrEmpty(global::NFO_Helper.Settings.Default.LastUsedFilterFilename) == false)
             {
@@ -52,35 +51,8 @@ namespace NFO_Helper
             updateFilterLabel();
         }
 
-        private void InitializeProvidersAtStartup()
-        {
-            // create what we know we can do at startup, do not prompt user if anything is not present.
-            if (String.IsNullOrEmpty(global::NFO_Helper.Settings.Default.TMDb_Api_Key) == false )
-            {
-                provider = new TMDb.TMDbDataProvider();
-            }
-        }
-
-        private void InitializeProviders()
-        {
-            // later, there should be a configuration option that tells us which provider(s) to use.
-            // for now, we are assuming only a single provider is available.
-            if(String.IsNullOrEmpty(global::NFO_Helper.Settings.Default.TMDb_Api_Key) == true )
-            {
-                MessageBox.Show("TMDb Api Key has not been defined, cannot create the TMDb Provider. Use the settings menu to get started.", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                return;
-            }
-            provider = new TMDb.TMDbDataProvider();
-        }
-
         private void button_update_Click(object sender, EventArgs e)
         {
-            if (provider == null)
-            {
-                MessageBox.Show("No Provider has been defined. Use the settings menu to get started.", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                return;
-            }
-
             // get id from the text box.
             if (String.IsNullOrEmpty(textBox_id.Text) == true)
                 return;
@@ -111,12 +83,6 @@ namespace NFO_Helper
 
         private void button_export_Click(object sender, EventArgs e)
         {
-            if (provider == null)
-            {
-                MessageBox.Show("No Provider has been defined. Use the settings menu to get started.", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                return;
-            }
-
             if (nfo == null || String.IsNullOrEmpty((string)nfo.getProperty(NFOConstants.Title)) == true)
                 return;
             
@@ -175,13 +141,7 @@ namespace NFO_Helper
         }
 
         private void button_search_Click(object sender, EventArgs e)
-        {
-            if (provider == null)
-            {
-                MessageBox.Show("No Provider has been defined. Use the settings menu to get started.", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                return;
-            }
-            
+        {            
             using (SearchForm search = new SearchForm(provider))
             {
                 if (search.ShowDialog() == DialogResult.OK)
@@ -290,12 +250,7 @@ namespace NFO_Helper
         {
             using (SettingsForm form = new SettingsForm())
             {
-                DialogResult result = form.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    // a new key has been defined, so it was either entered for the first time, or it has been changed.
-                    provider = new TMDb.TMDbDataProvider();
-                }
+                form.ShowDialog();
             }
         }
 

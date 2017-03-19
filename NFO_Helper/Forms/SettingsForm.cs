@@ -19,12 +19,6 @@ namespace NFO_Helper
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            // check if our config file already has an api key. if so, populate the text field with that to start.
-            string key = global::NFO_Helper.Settings.Default.TMDb_Api_Key;
-            if( String.IsNullOrEmpty(key) == false )
-            {
-                textBox_tmdb_api_key.Text = key;
-            }
             textBox_min_img_w.Text = global::NFO_Helper.Settings.Default.DesiredMinimumImageWidth.ToString();
         }
 
@@ -41,20 +35,7 @@ namespace NFO_Helper
                 }
             }
 
-            if (String.IsNullOrEmpty(textBox_tmdb_api_key.Text) == false)
-            {
-                // if the entered api key is different than what was in the config file, persist new value to the config file.
-                if (String.Compare(textBox_tmdb_api_key.Text, global::NFO_Helper.Settings.Default.TMDb_Api_Key) != 0)
-                {
-                    this.DialogResult = DialogResult.OK;
-                    global::NFO_Helper.Settings.Default.TMDb_Api_Key = textBox_tmdb_api_key.Text;
-                    needToSaveConfig = true;
-                }
-                else
-                {
-                    this.DialogResult = DialogResult.Cancel;
-                }
-            }
+            // in the future, additional configuration options can be added here. apply changes to the config file & set flag to save.
             
             if( needToSaveConfig == true )
                 global::NFO_Helper.Settings.Default.Save();
