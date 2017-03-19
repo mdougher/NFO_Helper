@@ -61,6 +61,19 @@ namespace NFO_Helper.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Release Notes:
+        ///------------------------------------------------------------------------------
+        ///Version 1.0.0.0
+        ///* Initial Release.
+        ///.
+        /// </summary>
+        internal static string ReleaseNotes {
+            get {
+                return ResourceManager.GetString("ReleaseNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap TMDb {

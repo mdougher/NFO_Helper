@@ -20,6 +20,7 @@ namespace NFO_Helper
             this.labelCopyright.Text = AssemblyCopyright;
             this.labelCompanyName.Text = AssemblyCompany;
             this.textBoxDescription.Text = AssemblyDescription;
+            this.textBoxReleaseNotes.Text = NFO_Helper.Properties.Resources.ReleaseNotes;
         }
 
         #region Assembly Attribute Accessors

@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="TMDb_Api_Key" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">d7dd08066c1003d4671936a4d3a5b85</Value>
+      <Value Profile="(Default)">3d7dd08066c1003d4671936a4d3a5b85</Value>
     </Setting>
     <Setting Name="DesiredMinimumImageWidth" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">300</Value>

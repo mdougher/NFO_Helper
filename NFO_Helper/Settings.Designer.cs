@@ -25,7 +25,7 @@ namespace NFO_Helper {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("d7dd08066c1003d4671936a4d3a5b85")]
+        [global::System.Configuration.DefaultSettingValueAttribute("3d7dd08066c1003d4671936a4d3a5b85")]
         public string TMDb_Api_Key {
             get {
                 return ((string)(this["TMDb_Api_Key"]));

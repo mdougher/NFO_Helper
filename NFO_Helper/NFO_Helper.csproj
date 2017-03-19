@@ -153,6 +153,7 @@
   <ItemGroup>
     <Content Include="Filter File Format.txt" />
     <Content Include="NFO Format.txt" />
+    <None Include="Resources\ReleaseNotes.txt" />
     <Content Include="ToDo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
