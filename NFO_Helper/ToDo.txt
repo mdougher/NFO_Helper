@@ -2,9 +2,6 @@
 
 For Future Release(s)
 * display NFO data in a more editable way, in case some of the results are not desired, but just for this result.
-* add a 'release notes' section to the About form.
 * if the NFO contains a 'thumb', do not allow user to change the image. the controls should be replaced with something to indicate this.
 	* would be nice if there was a way to allow the user to select which image to use as the 'thumb', but i don't want to spend much time on that...
 * show an 'error' image if there are no posters available, or if we fail to get one.
-
-* move progress indicator into the status bar at bottom of window.

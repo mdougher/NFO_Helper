@@ -33,7 +33,6 @@
             this.button_export = new System.Windows.Forms.Button();
             this.pictureBox_img = new System.Windows.Forms.PictureBox();
             this.textBox_nfo = new System.Windows.Forms.TextBox();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button_close = new System.Windows.Forms.Button();
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +45,7 @@
             this.label_image_num = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel_filtername = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel_movieid = new System.Windows.Forms.ToolStripStatusLabel();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox_search = new System.Windows.Forms.TextBox();
@@ -103,15 +103,6 @@
             this.textBox_nfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox_nfo.Size = new System.Drawing.Size(470, 302);
             this.textBox_nfo.TabIndex = 7;
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(260, 172);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(100, 23);
-            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progressBar1.TabIndex = 8;
-            this.progressBar1.Visible = false;
             // 
             // button_close
             // 
@@ -206,10 +197,12 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel_filtername,
+            this.toolStripProgressBar,
             this.toolStripStatusLabel_movieid});
             this.statusStrip1.Location = new System.Drawing.Point(0, 362);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(668, 22);
+            this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 14;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -218,6 +211,13 @@
             this.toolStripStatusLabel_filtername.Name = "toolStripStatusLabel_filtername";
             this.toolStripStatusLabel_filtername.Size = new System.Drawing.Size(126, 17);
             this.toolStripStatusLabel_filtername.Text = "NFO Filter Name Label";
+            // 
+            // toolStripProgressBar
+            // 
+            this.toolStripProgressBar.MarqueeAnimationSpeed = 0;
+            this.toolStripProgressBar.Name = "toolStripProgressBar";
+            this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             // 
             // toolStripStatusLabel_movieid
             // 
@@ -253,7 +253,6 @@
             this.Controls.Add(this.button_img_scroll_right);
             this.Controls.Add(this.button_img_scroll_left);
             this.Controls.Add(this.button_close);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.textBox_nfo);
             this.Controls.Add(this.pictureBox_img);
             this.Controls.Add(this.button_export);
@@ -261,7 +260,7 @@
             this.Controls.Add(this.button_update);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.MainMenu);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.MainMenu;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -282,7 +281,6 @@
         private System.Windows.Forms.Button button_export;
         private System.Windows.Forms.PictureBox pictureBox_img;
         private System.Windows.Forms.TextBox textBox_nfo;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button button_close;
         private System.Windows.Forms.MenuStrip MainMenu;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
@@ -298,6 +296,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_movieid;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_search;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
     }
 }
 

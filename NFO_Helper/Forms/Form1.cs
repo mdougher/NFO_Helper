@@ -191,7 +191,21 @@ namespace NFO_Helper
             try
             {
                 nfo = await provider.getNFOAsync(id, filter);
-                await updateDialogWithNfoAsync();
+                if (nfo == null)
+                    return;
+
+                textBox_nfo.Text = nfo.toXML(true);
+
+                object prop = nfo.getProperty(NFOConstants.Posters);
+                if (prop == null)
+                    return;
+
+                // display the first image result.
+                List<String> posterList = (List<String>)prop;
+                string url = posterList.FirstOrDefault();
+                currentPosterIndex = 0;
+                label_image_num.Text = "Image " + (currentPosterIndex + 1) + " of " + posterList.Count();
+                Task<bool> fireAndForget = loadImageAsync(url, pictureBox_img); // don't await.
             }
             catch (DataProviderException ex)
             {
@@ -202,27 +216,7 @@ namespace NFO_Helper
                 MessageBox.Show("Error while updating display for NFO: " + e.ToString(), "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private async Task<bool> updateDialogWithNfoAsync()
-        {
-            if (nfo == null )
-                return false;
-
-            textBox_nfo.Text = nfo.toXML(true);
-
-            object prop = nfo.getProperty(NFOConstants.Posters);
-            if (prop == null)
-                return true;
-
-            // display the first image result.
-            List<String> posterList = (List<String>)prop;
-            string url = posterList.FirstOrDefault();
-            currentPosterIndex = 0;
-            label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + posterList.Count();
-            loadImageAsync(url, pictureBox_img); // don't await.
-            
-            return true;
-        }
+        
         private async Task<bool> loadImageAsync(string url, PictureBox picbox)
         {
             try
@@ -240,7 +234,8 @@ namespace NFO_Helper
 
         private void startProgressIndication()
         {
-            progressBar1.Show();
+            toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+            toolStripProgressBar.MarqueeAnimationSpeed = 100;
             textBox_search.Enabled = false;
             textBox_nfo.Enabled = false;
             button_update.Enabled = false;
@@ -251,7 +246,8 @@ namespace NFO_Helper
 
         private void endProgressIndication()
         {
-            progressBar1.Hide();
+            toolStripProgressBar.Style = ProgressBarStyle.Continuous;
+            toolStripProgressBar.MarqueeAnimationSpeed = 0;
             textBox_search.Enabled = true;
             textBox_nfo.Enabled = true;
             button_update.Enabled = true;
@@ -328,7 +324,7 @@ namespace NFO_Helper
 
             string url = posterList[currentPosterIndex];
             label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + posterList.Count();
-            loadImageAsync(url, pictureBox_img); // don't await
+            Task<bool> fireAndForget = loadImageAsync(url, pictureBox_img); // don't await
         }
 
         private void button_img_scroll_right_Click(object sender, EventArgs e)
@@ -347,7 +343,7 @@ namespace NFO_Helper
 
             string url = posterList[currentPosterIndex];
             label_image_num.Text = "Image " + (currentPosterIndex+1) + " of " + posterList.Count();
-            loadImageAsync(url, pictureBox_img); // don't await
+            Task<bool> fireAndForget = loadImageAsync(url, pictureBox_img); // don't await
         }
 
         private void updateFilterLabel()

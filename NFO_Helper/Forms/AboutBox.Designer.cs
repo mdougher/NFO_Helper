@@ -153,7 +153,7 @@
             this.button1.Text = "OK";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // AboutBox1
+            // AboutBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -169,10 +169,10 @@
             this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.labelProductName);
             this.Controls.Add(this.logoPictureBox);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AboutBox1";
+            this.Name = "AboutBox";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

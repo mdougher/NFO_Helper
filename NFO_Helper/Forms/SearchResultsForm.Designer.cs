@@ -50,7 +50,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SearchResultsForm";
-            this.Text = "SearchResults";
+            this.Text = "NFO_Helper - Search Results";
             this.ResumeLayout(false);
 
         }

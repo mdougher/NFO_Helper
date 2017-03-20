@@ -29,7 +29,7 @@ namespace NFO_Helper
                 img.SizeMode = PictureBoxSizeMode.StretchImage;
                 if (String.IsNullOrEmpty(res.Poster) == false)
                 {
-                    loadImageAsync(res.Poster, img); // do not await!
+                    Task<bool> fireAndForget = loadImageAsync(res.Poster, img); // do not await!
                 }
 
                 Label title = new Label();

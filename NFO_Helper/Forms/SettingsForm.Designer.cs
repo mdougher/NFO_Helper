@@ -79,6 +79,7 @@
             this.Controls.Add(this.textBox_min_img_w);
             this.Controls.Add(this.button_cancel);
             this.Controls.Add(this.button_ok);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsForm";

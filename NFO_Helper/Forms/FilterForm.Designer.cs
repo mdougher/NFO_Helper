@@ -220,7 +220,7 @@
             this.Controls.Add(this.listBox_filter);
             this.Controls.Add(this.button_apply);
             this.Controls.Add(this.button_cancel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FilterForm";
