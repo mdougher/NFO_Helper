@@ -2,11 +2,17 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NFO_Helper" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="TMDb_Api_Key" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="TMDb_Api_Key" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">3d7dd08066c1003d4671936a4d3a5b85</Value>
     </Setting>
     <Setting Name="DesiredMinimumImageWidth" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">300</Value>
+    </Setting>
+    <Setting Name="LastUsedFilterFilename" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="KnownFilterFilenames" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

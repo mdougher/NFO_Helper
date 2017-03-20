@@ -1,13 +1,12 @@
 ﻿To Do List: (TBD:)
 
 For Future Release(s)
-* display NFO data in a more editable way.
-* customizable NFO filters some kind of new form. let the user define them, save to file & read it when needed.
-* add a 'release notes' section to the About form.
-* add more providers for movie data (IMDb, what else?)
-
-For Soon:
+* display NFO data in a more editable way, in case some of the results are not desired, but just for this result.
+* if the NFO contains a 'thumb', do not allow user to change the image. the controls should be replaced with something to indicate this.
+	* would be nice if there was a way to allow the user to select which image to use as the 'thumb', but i don't want to spend much time on that...
 * show an 'error' image if there are no posters available, or if we fail to get one.
 
-code improvements:
-* what other things should be disposed?
+* consider having a simpler export method:
+	what "I" want - create a folder with the same name & copy both nfo & jpg to that folder
+	or
+	current implementation

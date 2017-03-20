@@ -30,8 +30,8 @@ namespace NFO_Helper.TMDb
             mySources.Add(new TMDbVideosSource(movieId));
 
             NFO nfo = new NFO(); // NFO to populate.
-
-            foreach( string nfoProp in propertiesFilter.NFO_PropertyList )
+            List<String> properties = propertiesFilter.getPropertyList();
+            foreach( string nfoProp in properties )
             {
                 // get this property from one of the sources.
                 foreach (INfoDataSource source in mySources)
@@ -77,7 +77,7 @@ namespace NFO_Helper.TMDb
                 break; // take the first.
             }
 
-            SearchResults res = new global::NFO_Helper.SearchResults();
+            SearchResults res = new SearchResults();
             Search srch = await TMDbApi.getMovieSearchAsync(global::NFO_Helper.Settings.Default.TMDb_Api_Key, inputTitle, inputYear);
 
             if (srch != null)

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NFO_Helper")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("I use NFO files for my Plex library, even if they are not truly needed.\r\nI created this utility to simplify the NFO creation process when the web tools I used previously went out of commission. If you happen upon this, I hope you find it useful. Please submit any issues/bugs/requests to the github link. :)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NFO_Helper")]

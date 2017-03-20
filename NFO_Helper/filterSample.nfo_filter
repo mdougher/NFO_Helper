@@ -1,0 +1,9 @@
+{
+  name: 'sample nfo filter',
+  tags: [
+    'title',
+    'year',
+    'outline',
+    'id'
+  ]
+}

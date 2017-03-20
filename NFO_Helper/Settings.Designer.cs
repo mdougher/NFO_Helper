@@ -23,15 +23,12 @@ namespace NFO_Helper {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("3d7dd08066c1003d4671936a4d3a5b85")]
         public string TMDb_Api_Key {
             get {
                 return ((string)(this["TMDb_Api_Key"]));
-            }
-            set {
-                this["TMDb_Api_Key"] = value;
             }
         }
         
@@ -44,6 +41,30 @@ namespace NFO_Helper {
             }
             set {
                 this["DesiredMinimumImageWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastUsedFilterFilename {
+            get {
+                return ((string)(this["LastUsedFilterFilename"]));
+            }
+            set {
+                this["LastUsedFilterFilename"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string KnownFilterFilenames {
+            get {
+                return ((string)(this["KnownFilterFilenames"]));
+            }
+            set {
+                this["KnownFilterFilenames"] = value;
             }
         }
     }
