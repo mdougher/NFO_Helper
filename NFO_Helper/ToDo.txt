@@ -5,3 +5,8 @@ For Future Release(s)
 * if the NFO contains a 'thumb', do not allow user to change the image. the controls should be replaced with something to indicate this.
 	* would be nice if there was a way to allow the user to select which image to use as the 'thumb', but i don't want to spend much time on that...
 * show an 'error' image if there are no posters available, or if we fail to get one.
+
+* consider having a simpler export method:
+	what "I" want - create a folder with the same name & copy both nfo & jpg to that folder
+	or
+	current implementation

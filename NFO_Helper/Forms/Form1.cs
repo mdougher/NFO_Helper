@@ -50,6 +50,7 @@ namespace NFO_Helper
 
             updateFilterLabel();
             updateMovieIdLabel("");
+            this.ActiveControl = textBox_search;
         }
 
         private async void button_update_Click(object sender, EventArgs e)
@@ -98,10 +99,13 @@ namespace NFO_Helper
                     textBox_search.Text = res.Title + " (" + res.Year + ")";
                     updateMovieIdLabel(res.ID);
                     await updateNfoAsync(res.ID);
-                    button_export.Focus();
                 }
             }
             endProgressIndication();
+            if (String.IsNullOrEmpty(textBox_nfo.Text) == false)
+            {
+                button_export.Focus();
+            }
         }
         
         private void button_clear_Click(object sender, EventArgs e)
