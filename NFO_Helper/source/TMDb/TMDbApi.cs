@@ -34,7 +34,8 @@ namespace NFO_Helper.TMDb
         static public async Task<TMDb.Search> getMovieSearchAsync(string apikey, string query, string year = "")
         {
             string baseUrl = "https://api.themoviedb.org/3/search/movie";
-            string url = baseUrl + "?api_key=" + apikey + "&language=en-US&query=" + query + "&page=1";
+            string encodedQuery = Uri.EscapeDataString(query);
+            string url = baseUrl + "?api_key=" + apikey + "&language=en-US&query=" + encodedQuery + "&page=1";
             if (String.IsNullOrEmpty(year) == false)
             {
                 url += "&year=" + year;

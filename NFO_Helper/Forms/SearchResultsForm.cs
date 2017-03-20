@@ -33,7 +33,8 @@ namespace NFO_Helper
                 }
 
                 Label title = new Label();
-                title.AutoSize = false;
+                title.AutoSize = false; // titles with '&' are taken literally, does not need to be escaped.
+                title.UseMnemonic = false;
                 title.Width = item_width - img_width - 3;
                 title.AutoEllipsis = true;
                 title.Location = new Point(x_offset + img.Width + 3, y_offset);
