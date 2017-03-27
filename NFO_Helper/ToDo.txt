@@ -6,7 +6,4 @@ For Future Release(s)
 	* would be nice if there was a way to allow the user to select which image to use as the 'thumb', but i don't want to spend much time on that...
 * show an 'error' image if there are no posters available, or if we fail to get one.
 
-* consider having a simpler export method:
-	what "I" want - create a folder with the same name & copy both nfo & jpg to that folder
-	or
-	current implementation
+* call from command line / drag & drop movie file "title (year).extension" onto the exe --> create NFO & JPG for 'best guess' result.

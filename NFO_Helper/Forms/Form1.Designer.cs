@@ -49,6 +49,7 @@
             this.toolStripStatusLabel_movieid = new System.Windows.Forms.ToolStripStatusLabel();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox_search = new System.Windows.Forms.TextBox();
+            this.exportSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_img)).BeginInit();
             this.MainMenu.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -129,7 +130,8 @@
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.appSettingsToolStripMenuItem,
-            this.nFOFilterToolStripMenuItem});
+            this.nFOFilterToolStripMenuItem,
+            this.exportSettingsToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
@@ -137,14 +139,14 @@
             // appSettingsToolStripMenuItem
             // 
             this.appSettingsToolStripMenuItem.Name = "appSettingsToolStripMenuItem";
-            this.appSettingsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.appSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.appSettingsToolStripMenuItem.Text = "App Settings";
             this.appSettingsToolStripMenuItem.Click += new System.EventHandler(this.appSettingsToolStripMenuItem_Click);
             // 
             // nFOFilterToolStripMenuItem
             // 
             this.nFOFilterToolStripMenuItem.Name = "nFOFilterToolStripMenuItem";
-            this.nFOFilterToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.nFOFilterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.nFOFilterToolStripMenuItem.Text = "NFO Filter";
             this.nFOFilterToolStripMenuItem.Click += new System.EventHandler(this.NfoFilterToolStripMenuItem_Click);
             // 
@@ -242,6 +244,13 @@
             this.textBox_search.TabIndex = 15;
             this.textBox_search.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_search_KeyPress);
             // 
+            // exportSettingsToolStripMenuItem
+            // 
+            this.exportSettingsToolStripMenuItem.Name = "exportSettingsToolStripMenuItem";
+            this.exportSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportSettingsToolStripMenuItem.Text = "Export Settings";
+            this.exportSettingsToolStripMenuItem.Click += new System.EventHandler(this.exportSettingsToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -297,6 +306,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_search;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
+        private System.Windows.Forms.ToolStripMenuItem exportSettingsToolStripMenuItem;
     }
 }
 

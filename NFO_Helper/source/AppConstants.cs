@@ -13,5 +13,7 @@ namespace NFO_Helper
         public const string MovieIdLabelPrefix = "Selected Movie Id: ";
         public const string NfoFilterFileExtension = ".nfo_filter";
         public const string TempNfoFilterName = "[Temporary User Settings]";
+
+        public const string DefaultExportScheme = "{title} ({year})\\{title} ({year}).{extension}";
     }
 }
