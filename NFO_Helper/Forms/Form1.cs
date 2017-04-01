@@ -17,6 +17,7 @@ namespace NFO_Helper
         private IDataProvider provider { get; set; }
         private int currentPosterIndex { get; set; }
         private NFO_Filter filter { get; set; }
+        private string exportScheme { get; set; }
 
         public Form1()
         {
@@ -24,6 +25,11 @@ namespace NFO_Helper
             provider = new TMDb.TMDbDataProvider();
             nfo = new NFO();
             currentPosterIndex = 0;
+            // get scheme from config, if not present, use default.
+            if (String.IsNullOrEmpty(global::NFO_Helper.Settings.Default.ExportScheme) == false)
+                exportScheme = global::NFO_Helper.Settings.Default.ExportScheme;
+            else
+                exportScheme = AppConstants.DefaultExportScheme;
             // check configuration if another filter has been used, load that instead.
             if (String.IsNullOrEmpty(global::NFO_Helper.Settings.Default.LastUsedFilterFilename) == false)
             {
@@ -130,58 +136,20 @@ namespace NFO_Helper
         {
             if (nfo == null || String.IsNullOrEmpty((string)nfo.getProperty(NFOConstants.Title)) == true)
                 return;
-            
-            // note: if the NFO contains a 'thumb', we do not need to save the image?
-            //      this also means that there is only a single export step, so update the titles of the prompt windows accordingly.
-            bool isThumb = String.IsNullOrEmpty((string)nfo.getProperty(NFOConstants.Thumb)) == false;
-#if DEBUG
-            string initDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-#else
-            string initDir = AppDomain.CurrentDomain.BaseDirectory;
-#endif
-
-            // save the NFO, be careful to sanitize the output filenames so they do not contain invalid characters. This might not be perfect, but should work for most situations.
-            string defaultFileName = (string)nfo.getProperty(NFOConstants.Title) + " (" + (string)nfo.getProperty(NFOConstants.Year) + ")";
-            foreach (var c in Path.GetInvalidFileNameChars())
+            IList<string> written = Exporter.export(nfo, exportScheme, pictureBox_img.Image);
+            if( written.Any() == false )
             {
-                defaultFileName = defaultFileName.Replace(c, '-');
+                MessageBox.Show("Failed to Export!", "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            SaveFileDialog dlgNfo = new SaveFileDialog();
-            dlgNfo.Filter = "nfo files (*.nfo)|*.nfo|All files (*.*)|*.*";
-            dlgNfo.FilterIndex = 1;
-            dlgNfo.RestoreDirectory = true;
-            dlgNfo.AddExtension = true;
-            dlgNfo.DefaultExt = "nfo";
-            dlgNfo.InitialDirectory = initDir;
-            dlgNfo.OverwritePrompt = true;
-            dlgNfo.Title = isThumb ? "Save NFO File..." : "Export Step 1 of 2 - Save NFO File...";
-            dlgNfo.FileName = defaultFileName;
-
-            if (dlgNfo.ShowDialog() == DialogResult.OK)
+            else
             {
-                // user has selected a filename to save.
-                File.WriteAllText(dlgNfo.FileName, nfo.toXML(true));
-            }
-
-            // save the Image
-            if (pictureBox_img.Image == null || isThumb == true)
-                return;
-            
-            SaveFileDialog dlgImg = new SaveFileDialog();
-            dlgImg.Filter = "jpg files (*.jpg)|*.jpg|All files (*.*)|*.*";
-            dlgImg.FilterIndex = 1;
-            dlgImg.RestoreDirectory = true;
-            dlgImg.AddExtension = true;
-            dlgImg.DefaultExt = "jpg";
-            dlgImg.InitialDirectory = initDir;
-            dlgImg.OverwritePrompt = true;
-            dlgImg.Title = "Export Step 2 of 2 - Save Image File...";
-            dlgImg.FileName = defaultFileName;
-
-            if (dlgImg.ShowDialog() == DialogResult.OK)
-            {
-                // user has selected a filename to save.
-                pictureBox_img.Image.Save(dlgImg.FileName);
+                string msg = "Successfully exported files:";
+                foreach( string s in written )
+                {
+                    msg += "\r\n";
+                    msg += s;
+                }
+                MessageBox.Show(msg, "NFO_Helper", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -369,6 +337,21 @@ namespace NFO_Helper
             {
                 e.Handled = true;
                 button_update_Click(this, new EventArgs());
+            }
+        }
+
+        private void exportSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (ExportSettingsForm form = new ExportSettingsForm())
+            {
+                form.ShowDialog();
+                if (form.DialogResult == DialogResult.OK)
+                {
+                    // got a new scheme, update config.
+                    exportScheme = form.scheme;
+                    global::NFO_Helper.Settings.Default.ExportScheme = exportScheme;
+                    global::NFO_Helper.Settings.Default.Save();
+                }
             }
         }
     }

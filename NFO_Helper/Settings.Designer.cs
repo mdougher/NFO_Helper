@@ -67,5 +67,17 @@ namespace NFO_Helper {
                 this["KnownFilterFilenames"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ExportScheme {
+            get {
+                return ((string)(this["ExportScheme"]));
+            }
+            set {
+                this["ExportScheme"] = value;
+            }
+        }
     }
 }
