@@ -48,47 +48,46 @@ namespace NFO_Helper
 
             // prepare any filter files that have been previously used.
             string listStr = global::NFO_Helper.Settings.Default.KnownFilterFilenames;
-            if (String.IsNullOrEmpty(listStr) == true)
-                return;
-
-            string validTokens = "";
-            char[] delims = { ';' };
-            string[] tokens = listStr.Split(delims);
-            foreach (string token in tokens)
+            if (String.IsNullOrEmpty(listStr) == false)
             {
-                NFO_Filter_File file = new NFO_Filter_File();
-                file.fileName = token;
-                try
+                string validTokens = "";
+                char[] delims = { ';' };
+                string[] tokens = listStr.Split(delims);
+                foreach (string token in tokens)
                 {
-                    file.parseFile(token);
-                }
-                catch (NfoReadWriteException)
-                {
-                    continue;
-                }
+                    NFO_Filter_File file = new NFO_Filter_File();
+                    file.fileName = token;
+                    try
+                    {
+                        file.parseFile(token);
+                    }
+                    catch (NfoReadWriteException)
+                    {
+                        continue;
+                    }
 
-                NFO_Filter_File temp = null;
-                if (filterFiles.TryGetValue(file.filter.name, out temp) == true)
-                {
-                    // skip this one, there is one with this name already present.
-                    continue;
+                    NFO_Filter_File temp = null;
+                    if (filterFiles.TryGetValue(file.filter.name, out temp) == true)
+                    {
+                        // skip this one, there is one with this name already present.
+                        continue;
+                    }
+                    else
+                    {
+                        filterFiles.Add(file.filter.name, file);
+                        comboBox_filterselect.Items.Add(file.filter.name);
+                        if (String.IsNullOrEmpty(validTokens) == false)
+                            validTokens += ";";
+                        validTokens += file.fileName;
+                    }
                 }
-                else
+                if (String.Compare(listStr, validTokens) != 0)
                 {
-                    filterFiles.Add(file.filter.name, file);
-                    comboBox_filterselect.Items.Add(file.filter.name);
-                    if (String.IsNullOrEmpty(validTokens) == false)
-                        validTokens += ";";
-                    validTokens += file.fileName;
+                    // at least one of the tokens was not used! update the config!
+                    global::NFO_Helper.Settings.Default.KnownFilterFilenames = validTokens;
+                    global::NFO_Helper.Settings.Default.Save();
                 }
             }
-            if (String.Compare(listStr, validTokens) != 0)
-            {
-                // at least one of the tokens was not used! update the config!
-                global::NFO_Helper.Settings.Default.KnownFilterFilenames = validTokens;
-                global::NFO_Helper.Settings.Default.Save();
-            }
-
 
             if (String.Compare(currentFilter.name, AppConstants.DefaultNfoFilterName) == 0)
             {
